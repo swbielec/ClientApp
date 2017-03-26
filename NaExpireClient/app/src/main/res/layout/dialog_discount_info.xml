@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/lblInfoItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/lblInfoPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="$X.XX"
+        android:textSize="20dp"
+        android:textColor="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/lblInfoRestName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lblInfoItemName"
+        android:text="Restaurant Name"/>
+
+    <TextView
+        android:id="@+id/lblInfoDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lblInfoRestName"
+        android:text="Distance"/>
+
+    <TextView
+        android:id="@+id/lblInfoDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lblInfoDistance"
+        android:text="Description"/>
+
+    <TextView
+        android:id="@+id/lblInfoQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/lblInfoDescription"
+        android:text="Quantity:"/>
+
+    <Spinner
+        android:id="@+id/spnInfoQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/lblInfoDescription"
+        android:layout_toRightOf="@id/lblInfoQuantity" />
+
+    <Button
+        android:id="@+id/btnInfoCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/spnInfoQuantity"
+        android:text="Add to Cart"
+        android:textColor="@android:color/background_light"
+        android:background="@color/colorAccent"/>
+
+</RelativeLayout>

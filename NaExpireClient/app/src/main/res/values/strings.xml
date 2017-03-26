@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">NaExpireClient</string>
+    <string name="title_activity_nav_drawer">ActivityNavDrawer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string-array name="filter_array">
+        <item>All</item>
+        <item>Favorites</item>
+        <item>Price: High to Low</item>
+        <item>Price: Low to High</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

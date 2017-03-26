@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context="com.capstone.naexpire.naexpireclient.ActivityRegFoodTypes">
+
+    <TextView
+        android:id="@+id/lblRegFoodsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Select Food Types You Like"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/btnRegFoodsFinish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="clickFinish"
+        android:text="Finish"
+        android:textColor="@color/colorAccent"
+        android:background="@android:color/transparent"/>
+
+    <ListView
+        android:id="@+id/lstRegFoodsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_above="@id/btnRegFoodsFinish"
+        android:layout_below="@id/lblRegFoodsHeader"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
+
+</RelativeLayout>
