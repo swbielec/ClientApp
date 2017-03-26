@@ -3,6 +3,7 @@ package com.capstone.naexpire.naexpireclient;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +17,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class FragmentCurrentOrders extends Fragment {
 
     ListAdapterDiscounts adapter;
+    ArrayList<String> itemname = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
     ArrayList<String> time = new ArrayList<String>();
     ArrayList<String> price = new ArrayList<String>();
+    ArrayList<String> prices = new ArrayList<String>();
 
     public FragmentCurrentOrders() {
         // Required empty public constructor
@@ -38,6 +42,12 @@ public class FragmentCurrentOrders extends Fragment {
         FragmentCurrentOrders.this.getActivity().setTitle("Current Orders"); //set title
 
         //dummy data
+        itemname.add("Spaghetti\nBreadsticks");
+        itemname.add("Cajun Coffee\nGyros");
+        itemname.add("Spring Rolls\nShaken Beef\nSake");
+        prices.add("$9.32\n$3.04");
+        prices.add("$2.21\n$6.22");
+        prices.add("$13.12\n$10.20\n$3.07");
         restname.add("McFate Brewery");
         restname.add("Haji Baba");
         restname.add("Rice Paper");
@@ -52,54 +62,52 @@ public class FragmentCurrentOrders extends Fragment {
         ListView listview = (ListView) view.findViewById(R.id.lstOrdersCurrent);
         listview.setAdapter(adapter);
 
+        Button past = (Button) view.findViewById(R.id.btnOrdersPast);
+
+        past.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentPastOrders fragmentPastOrders = new FragmentPastOrders();
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                manager.beginTransaction().replace(R.id.fragment_container, fragmentPastOrders).commit();
+            }
+        });
+
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id){
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentCurrentOrders.this.getContext());
                 View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_current_order, null);
                 final TextView itemName = (TextView) dialogView.findViewById(R.id.lblCurrentName);
                 final TextView restName = (TextView) dialogView.findViewById(R.id.lblCurrentRest);
-                final TextView itemPrice = (TextView) dialogView.findViewById(R.id.lblCurrentPrices);
-                final TextView itemDesc = (TextView) dialogView.findViewById(R.id.lbl);
-                final TextView restDist = (TextView) dialogView.findViewById(R.id.lblInfoDistance);
-                Button cart = (Button) dialogView.findViewById(R.id.btnInfoCart);
+                final TextView orderprices = (TextView) dialogView.findViewById(R.id.lblCurrentPrices);
+                final TextView orderid = (TextView) dialogView.findViewById(R.id.lblCurrentOrderID);
+                final TextView ordertotal = (TextView) dialogView.findViewById(R.id.lblCurrentTotal);
+                final TextView ordertime = (TextView) dialogView.findViewById(R.id.lblCurrentTime);
+                Button orderDirec = (Button) dialogView.findViewById(R.id.btnCurrentDirections);
+                Button orderCall = (Button) dialogView.findViewById(R.id.btnCurrentCall);
 
-                itemName.setText(name.get(position));
-                itemPrice.setText(price.get(position));
+                itemName.setText(itemname.get(position));
+                orderprices.setText(prices.get(position));
                 restName.setText(restname.get(position));
-                itemDesc.setText(description.get(position));
-                restDist.setText(distance.get(position));
-                final int num = Integer.parseInt(quantity.get(position));
-
-                String[] n = new String[num];
-                for(int i = 0; i < num; i++){
-                    n[i] = ""+(i+1);
-                }
-
-                final Spinner mspin=(Spinner) dialogView.findViewById(R.id.spnInfoQuantity);
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(FragmentDiscounts.this.getContext(),android.R.layout.simple_spinner_item, n);
-                mspin.setAdapter(adapter);
+                Random rnd = new Random();
+                orderid.setText("Order #"+(100000 + rnd.nextInt(900000)));
+                ordertotal.setText(price.get(position));
+                ordertime.setText("Placed at: "+time.get(position));
 
                 dialogBuilder.setView(dialogView);
                 final AlertDialog dialog = dialogBuilder.create();
                 dialog.show();
 
-                cart.setOnClickListener(new View.OnClickListener() {
+                orderDirec.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int amount = Integer.parseInt(mspin.getSelectedItem().toString());
-                        int newNum = num - amount;
-                        quantity.set(position, ""+newNum);
-                        if(newNum == 0){
-                            Toast.makeText(FragmentDiscounts.this.getContext(),"removing",Toast.LENGTH_SHORT).show();
-                            name.remove(position);
-                            price.remove(position);
-                            description.remove(position);
-                            restname.remove(position);
-                            distance.remove(position);
-                            quantity.remove(position);
-                            adapter.notifyDataSetChanged();
-                            //doesn't get updated correctly...
-                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                orderCall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         dialog.dismiss();
                     }
                 });
