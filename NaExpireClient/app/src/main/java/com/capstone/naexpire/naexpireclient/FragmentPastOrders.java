@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ import java.util.Random;
 
 public class FragmentPastOrders extends Fragment {
 
-    ListAdapterDiscounts adapter;
+    ListAdapterOrdersPast adapter;
+    ArrayList<String> orderId = new ArrayList<String>();
     ArrayList<String> itemname = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
     ArrayList<String> time = new ArrayList<String>();
-    ArrayList<String> price = new ArrayList<String>();
     ArrayList<String> prices = new ArrayList<String>();
 
     public FragmentPastOrders() {
@@ -38,26 +39,31 @@ public class FragmentPastOrders extends Fragment {
         View view = inflater.inflate(R.layout.fragment_past_orders, container, false);
         FragmentPastOrders.this.getActivity().setTitle("Past Orders"); //set title
 
+        adapter = new ListAdapterOrdersPast(FragmentPastOrders.this.getContext());
+        ListView listview = (ListView) view.findViewById(R.id.lstOrdersPast);
+        listview.setAdapter(adapter);
+
         //dummy data
+        Random rnd = new Random();
+        orderId.add(""+(100000 + rnd.nextInt(900000)));
+        orderId.add(""+(100000 + rnd.nextInt(900000)));
+        orderId.add(""+(100000 + rnd.nextInt(900000)));
         itemname.add("Tamales\nFlan");
         itemname.add("Cheese Pizza\nSoft Drink");
         itemname.add("Scrambled Eggs\nHorchata\nPancakes");
-        prices.add("$11.52\n$5.34");
-        prices.add("$8.98\n$1.23");
-        prices.add("$13.12\n$4.23\n$3.07");
+        prices.add("11.52,5.34");
+        prices.add("8.98,1.23");
+        prices.add("13.12,4.23,3.07");
         restname.add("Los Sombreros");
         restname.add("Organ Stop Pizza");
         restname.add("Otro Cafe");
         time.add("12:42pm 2/22/17");
         time.add("9:17am 2/19/17");
         time.add("2:32pm 2/03/17");
-        price.add("$16.86");
-        price.add("$11.21");
-        price.add("$20.42");
 
-        adapter = new ListAdapterDiscounts(FragmentPastOrders.this.getContext());
-        ListView listview = (ListView) view.findViewById(R.id.lstOrdersPast);
-        listview.setAdapter(adapter);
+        for(int i = 0; i < prices.size(); i++){
+            adapter.newItem(orderId.get(i), itemname.get(i), restname.get(i), prices.get(i), time.get(i));
+        }
 
         Button current = (Button) view.findViewById(R.id.btnOrdersCurrent);
 
@@ -80,15 +86,16 @@ public class FragmentPastOrders extends Fragment {
                 final TextView orderid = (TextView) dialogView.findViewById(R.id.lblPastOrderID);
                 final TextView ordertotal = (TextView) dialogView.findViewById(R.id.lblPastTotal);
                 final TextView ordertime = (TextView) dialogView.findViewById(R.id.lblPastTime);
+                final RatingBar rating = (RatingBar) dialogView.findViewById(R.id.ratingBar);
                 Button orderSubmit = (Button) dialogView.findViewById(R.id.btnPastSubmit);
 
-                itemName.setText(itemname.get(position));
-                orderprices.setText(prices.get(position));
-                restName.setText(restname.get(position));
-                Random rnd = new Random();
-                orderid.setText("Order #"+(100000 + rnd.nextInt(900000)));
-                ordertotal.setText(price.get(position));
-                ordertime.setText("Placed at: "+time.get(position));
+                itemName.setText(adapter.getName(position));
+                orderprices.setText(adapter.getPrice(position));
+                restName.setText(adapter.getRestaurant(position));
+                orderid.setText("Order #"+adapter.getOrderId(position));
+                ordertotal.setText(adapter.getTotal(position));
+                ordertime.setText("Placed at: "+adapter.getTime(position));
+                rating.setRating(adapter.getRating(position));
 
                 dialogBuilder.setView(dialogView);
                 final AlertDialog dialog = dialogBuilder.create();
@@ -97,6 +104,8 @@ public class FragmentPastOrders extends Fragment {
                 orderSubmit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        int stars = (int)rating.getRating();
+                        adapter.setRating(position, stars);
                         dialog.dismiss();
                     }
                 });

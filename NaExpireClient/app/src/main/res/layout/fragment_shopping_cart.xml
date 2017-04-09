@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     tools:context="com.capstone.naexpire.naexpireclient.FragmentShoppingCart">
 
     <Button
@@ -12,16 +11,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Place Order"
-        android:textColor="@color/colorAccent"
-        android:background="@android:color/transparent"/>
+        android:textColor="@android:color/background_light"
+        android:background="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/btnCartBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_above="@id/btnCartPlace"
+        android:text="Back to Discounts"
+        android:textColor="@android:color/background_light"
+        android:background="@color/colorAccent"/>
 
     <TextView
         android:id="@+id/lblCartSubtotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btnCartPlace"
+        android:layout_above="@id/btnCartBack"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:text="Subtotal: $X.XX"
         android:textSize="20dp"
         android:textStyle="bold"/>
@@ -31,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
         android:layout_above="@id/lblCartSubtotal"/>
 
 </RelativeLayout>

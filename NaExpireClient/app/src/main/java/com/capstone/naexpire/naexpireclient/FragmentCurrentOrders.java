@@ -9,12 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,7 +19,7 @@ import java.util.Random;
 
 public class FragmentCurrentOrders extends Fragment {
 
-    ListAdapterOrders adapter;
+    ListAdapterOrdersCurrent adapter;
     ArrayList<String> itemname = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
     ArrayList<String> time = new ArrayList<String>();
@@ -42,7 +39,7 @@ public class FragmentCurrentOrders extends Fragment {
         View view = inflater.inflate(R.layout.fragment_current_orders, container, false);
         FragmentCurrentOrders.this.getActivity().setTitle("Current Orders"); //set title
 
-        adapter = new ListAdapterOrders(FragmentCurrentOrders.this.getContext());
+        adapter = new ListAdapterOrdersCurrent(FragmentCurrentOrders.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstOrdersCurrent);
         listview.setAdapter(adapter);
 
@@ -63,8 +60,8 @@ public class FragmentCurrentOrders extends Fragment {
         distance.add(3.5);
         distance.add(7.3);
         image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/burger");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/gyros");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/rolls");
 
         for(int i = 0; i < prices.size(); i++){
             adapter.newItem(itemname.get(i), restname.get(i), image.get(i), prices.get(i), time.get(i),

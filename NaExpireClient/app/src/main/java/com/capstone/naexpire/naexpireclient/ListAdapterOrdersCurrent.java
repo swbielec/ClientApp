@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ListAdapterOrders extends BaseAdapter {
+public class ListAdapterOrdersCurrent extends BaseAdapter {
     ArrayList<Order> orders;
     Context context;
 
     private static LayoutInflater inflater = null;
 
-    public ListAdapterOrders(Context c){
+    public ListAdapterOrdersCurrent(Context c){
         orders = new ArrayList<>();
         context = c;
 
@@ -73,7 +73,7 @@ public class ListAdapterOrders extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
         Holder holder = new Holder();
-        final View rowView = inflater.inflate(R.layout.list_orders, null);
+        final View rowView = inflater.inflate(R.layout.list_orders_current, null);
         holder.rn=(TextView) rowView.findViewById(R.id.lblOrdersRest);
         holder.tm=(TextView) rowView.findViewById(R.id.lblOrdersTime);
         holder.pr=(TextView) rowView.findViewById(R.id.lblOrdersPrice);
