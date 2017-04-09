@@ -5,21 +5,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ListAdapterFoods extends BaseAdapter{
 
-    ArrayList<String> types;
+    ArrayList<String> types, checked;
     Context context;
-    Holder holder;
 
     private static LayoutInflater inflater = null;
 
-    public ListAdapterFoods(Context c, ArrayList<String> t){
+    public ListAdapterFoods(Context c, ArrayList<String> t, ArrayList<String> ch){
         types = t;
+        checked = ch;
         context = c;
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -40,24 +42,31 @@ public class ListAdapterFoods extends BaseAdapter{
         return position;
     }
 
-    public void clicked(int position){
-        holder.bt.setImageResource(R.mipmap.ic_check_box_black_24dp);
-        notifyDataSetChanged();
-    }
+    public ArrayList<String> getChecked(){ return checked; }
 
     public class Holder{
-        TextView tp;
-        ImageView bt;
+        CheckBox box;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
-        holder = new Holder();
+        Holder holder = new Holder();
         final View rowView = inflater.inflate(R.layout.list_foods, null);
-        holder.tp=(TextView) rowView.findViewById(R.id.lblListFoods);
-        holder.bt=(ImageView) rowView.findViewById(R.id.imgCheckBox);
+        holder.box = (CheckBox) rowView.findViewById(R.id.checkBox);
 
-        holder.tp.setText(types.get(position));
+        holder.box.setText(types.get(position));
+        for(int i = 0; i < checked.size(); i++){
+            if(checked.get(i).equals(types.get(position))) holder.box.setChecked(true);
+        }
+
+        holder.box.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) { checked.add(types.get(position)); }
+                else checked.remove(types.get(position));
+            }
+        });
 
         return rowView;
     }

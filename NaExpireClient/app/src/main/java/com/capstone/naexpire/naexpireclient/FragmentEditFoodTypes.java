@@ -18,6 +18,7 @@ public class FragmentEditFoodTypes extends Fragment {
 
     ListAdapterFoods adapter;
     ArrayList<String> foods = new ArrayList<String>();
+    ArrayList<String> checked = new ArrayList<String>();
 
     public FragmentEditFoodTypes() {
         // Required empty public constructor
@@ -37,7 +38,7 @@ public class FragmentEditFoodTypes extends Fragment {
         foods.add("Chinese");
         foods.add("Mediterranean");
 
-        adapter = new ListAdapterFoods(FragmentEditFoodTypes.this.getContext(), foods);
+        adapter = new ListAdapterFoods(FragmentEditFoodTypes.this.getContext(), foods, checked);
         final ListView listView = (ListView) view.findViewById(R.id.lstPrefFoods);
         listView.setAdapter(adapter);
 

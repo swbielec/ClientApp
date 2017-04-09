@@ -2,6 +2,8 @@
     <string name="app_name">NaExpireClient</string>
     <string name="title_activity_nav_drawer">ActivityNavDrawer</string>
 
+    <string name="first_login_descrip">Setting your food type prefrences will help find deals relevant to your interests.</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

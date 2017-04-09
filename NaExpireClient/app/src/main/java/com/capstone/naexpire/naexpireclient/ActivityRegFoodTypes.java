@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ActivityRegFoodTypes extends AppCompatActivity {
 
     ArrayList<String> foods = new ArrayList<String>();
-    ArrayList<String> selected = new ArrayList<String>(); //list of currently selected food types
+    ArrayList<String> checked = new ArrayList<String>(); //list of currently selected food types
     ListAdapterFoods adapter;
 
     @Override
@@ -29,38 +30,14 @@ public class ActivityRegFoodTypes extends AppCompatActivity {
         foods.add("Chinese");
         foods.add("Mediterranean");
 
-        adapter = new ListAdapterFoods(this, foods);
+        adapter = new ListAdapterFoods(this, foods, checked);
         final ListView listView = (ListView) findViewById(R.id.lstRegFoodsList);
         listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                //adapter.clicked(position);
-
-                /*String sel = listView.getItemAtPosition(position).toString(); //gets text of selected element
-                if(isIn(sel)){ //deselect if tapped when selected
-                    parent.getChildAt(position).setBackgroundColor(Color.TRANSPARENT);
-                    selected.remove(sel); //remove from list of selected food types
-                }
-                else{ //select if tapped when deselected
-                    //change background color to accent color
-                    listView.getChildAt(position).setBackgroundColor(Color.argb(255,255,64,129));
-                    selected.add(sel); //add to list of selected food types
-                }
-                adapter.notifyDataSetChanged();*/
-            }
-        });
     }
 
     public void clickFinish(View view){
-        Intent intent = new Intent(this, ActivityLogin.class);
+        Intent intent = new Intent(this, ActivityNavDrawer.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    public Boolean isIn(String food){
-        for(int i = 0; i < selected.size(); i++){
-            if (food.equals(selected.get(i))) return true;
-        }
-        return false;
     }
 }
