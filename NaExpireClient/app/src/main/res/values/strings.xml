@@ -10,8 +10,8 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="filter_array">
-        <item>All</item>
-        <item>Favorites</item>
+        <item>Alphabetical</item>
+        <item>Distance</item>
         <item>Price: High to Low</item>
         <item>Price: Low to High</item>
     </string-array>

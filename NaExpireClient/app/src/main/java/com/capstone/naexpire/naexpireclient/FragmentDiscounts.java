@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -22,11 +25,12 @@ public class FragmentDiscounts extends Fragment {
 
     ListAdapterDiscounts adapter;
     ArrayList<String> name = new ArrayList<String>();
-    ArrayList<String> price = new ArrayList<String>();
+    ArrayList<Double> price = new ArrayList<Double>();
     ArrayList<String> description = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
-    ArrayList<String> distance = new ArrayList<String>();
-    ArrayList<String> quantity = new ArrayList<String>();
+    ArrayList<Double> distance = new ArrayList<Double>();
+    ArrayList<Integer> quantity = new ArrayList<Integer>();
+    ArrayList<String> image = new ArrayList<String>();
 
 
     public FragmentDiscounts() {
@@ -42,27 +46,7 @@ public class FragmentDiscounts extends Fragment {
 
         FragmentDiscounts.this.getActivity().setTitle("Discounts"); //set activity title
 
-        //test data
-        name.add("Beef Taco");
-        name.add("Chicken Taco");
-        name.add("Shrimp Taco");
-        restname.add("Chicken on a Stick");
-        restname.add("Raising Canes");
-        restname.add("Fiesta Burrito");
-        price.add("$1.23");
-        price.add("$2.34");
-        price.add("$3.45");
-        description.add("Taco with beef");
-        description.add("Taco with chicken");
-        description.add("Taco with shrimp");
-        distance.add("7.2 miles");
-        distance.add("3.5 miles");
-        distance.add("8.1 miles");
-        quantity.add("2");
-        quantity.add("5");
-        quantity.add("7");
-
-        adapter = new ListAdapterDiscounts(FragmentDiscounts.this.getContext(), name, restname, price);
+        adapter = new ListAdapterDiscounts(FragmentDiscounts.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstDiscounts);
         listview.setAdapter(adapter);
 
@@ -74,6 +58,69 @@ public class FragmentDiscounts extends Fragment {
         spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spAdapter);
 
+        //test data
+        name.add("Beef Taco");
+        name.add("Caesar Salad");
+        name.add("Chicken Taco");
+        name.add("Cheeseburger");
+        name.add("Shrimp Taco");
+        name.add("Spaghetti Carbonara");
+        restname.add("Chicken on a Stick");
+        restname.add("DJ's Bagels");
+        restname.add("Raising Canes");
+        restname.add("In n Out");
+        restname.add("Fiesta Burrito");
+        restname.add("Noodles");
+        price.add(1.23);
+        price.add(3.43);
+        price.add(2.34);
+        price.add(2.67);
+        price.add(3.45);
+        price.add(2.35);
+        description.add("Taco with beef");
+        description.add("Leafy greens");
+        description.add("Taco with chicken");
+        description.add("Burger with cheese");
+        description.add("Taco with shrimp");
+        description.add("Pasta with pasta sauce");
+        distance.add(7.2);
+        distance.add(12.5);
+        distance.add(3.5);
+        distance.add(1.2);
+        distance.add(8.1);
+        distance.add(4.2);
+        quantity.add(2);
+        quantity.add(1);
+        quantity.add(5);
+        quantity.add(3);
+        quantity.add(7);
+        quantity.add(3);
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/salad");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos2");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/burger");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
+
+        for(int i = 0; i < name.size(); i++){
+            adapter.newItem(name.get(i),price.get(i),restname.get(i), image.get(i), description.get(i),
+                    distance.get(i), quantity.get(i));
+        }
+        adapter.sortDiscounts(spinner.getSelectedItemPosition());
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                adapter.sortDiscounts(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id){
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentDiscounts.this.getContext());
@@ -83,14 +130,16 @@ public class FragmentDiscounts extends Fragment {
                 final TextView itemPrice = (TextView) dialogView.findViewById(R.id.lblInfoPrice);
                 final TextView itemDesc = (TextView) dialogView.findViewById(R.id.lblInfoDescription);
                 final TextView restDist = (TextView) dialogView.findViewById(R.id.lblInfoDistance);
+                ImageView itemPic = (ImageView) dialogView.findViewById(R.id.imgInfoPicture);
                 Button cart = (Button) dialogView.findViewById(R.id.btnInfoCart);
 
-                itemName.setText(name.get(position));
-                itemPrice.setText(price.get(position));
-                restName.setText(restname.get(position));
-                itemDesc.setText(description.get(position));
-                restDist.setText(distance.get(position));
-                final int num = Integer.parseInt(quantity.get(position));
+                itemName.setText(adapter.getName(position));
+                itemPrice.setText("$"+adapter.getPrice(position));
+                restName.setText(adapter.getRestaurant(position));
+                itemDesc.setText(adapter.getDescription(position));
+                restDist.setText(adapter.getDistance(position)+" miles");
+                final int num = adapter.getQuantity(position);
+                Glide.with(FragmentDiscounts.this.getContext()).load(adapter.getImage(position)).into(itemPic);
 
                 String[] n = new String[num];
                 for(int i = 0; i < num; i++){
@@ -98,8 +147,8 @@ public class FragmentDiscounts extends Fragment {
                 }
 
                 final Spinner mspin=(Spinner) dialogView.findViewById(R.id.spnInfoQuantity);
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(FragmentDiscounts.this.getContext(),android.R.layout.simple_spinner_item, n);
-                mspin.setAdapter(adapter);
+                final ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(FragmentDiscounts.this.getContext(),android.R.layout.simple_spinner_item, n);
+                mspin.setAdapter(sAdapter);
 
                 dialogBuilder.setView(dialogView);
                 final AlertDialog dialog = dialogBuilder.create();
@@ -110,17 +159,9 @@ public class FragmentDiscounts extends Fragment {
                     public void onClick(View view) {
                         int amount = Integer.parseInt(mspin.getSelectedItem().toString());
                         int newNum = num - amount;
-                        quantity.set(position, ""+newNum);
+                        adapter.setQuantity(position, newNum);
                         if(newNum == 0){
-                            Toast.makeText(FragmentDiscounts.this.getContext(),"removing",Toast.LENGTH_SHORT).show();
-                            name.remove(position);
-                            price.remove(position);
-                            description.remove(position);
-                            restname.remove(position);
-                            distance.remove(position);
-                            quantity.remove(position);
-                            adapter.notifyDataSetChanged();
-                            //doesn't get updated correctly...
+                            adapter.deleteItem(position);
                         }
                         dialog.dismiss();
                     }

@@ -2,32 +2,54 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/lblDiscountName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Item Name"
-        android:textStyle="bold"/>
+    <ImageView
+        android:id="@+id/imgDiscountPicture"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"/>
 
-    <TextView
-        android:id="@+id/lblDiscountPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/lblDiscountName"
-        android:text="$X.XX"
-        android:textSize="25dp"
-        android:textColor="@color/colorAccent"/>
+    <RelativeLayout
+        android:id="@+id/rlDiscount"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@id/imgDiscountPicture"
+        android:background="@color/colorListShade">
 
-    <TextView
-        android:id="@+id/lblDiscountRest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/lblDiscountPrice"
-        android:text="Rest Name"
-        android:textSize="10dp"/>
+        <TextView
+            android:id="@+id/lblDiscountName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="8dp"
+            android:text="Item Name"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold"
+            android:textSize="15dp"/>
+
+        <TextView
+            android:id="@+id/lblDiscountPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/lblDiscountName"
+            android:paddingRight="8dp"
+            android:text="$X.XX"
+            android:textSize="25dp"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/lblDiscountRest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:layout_alignBottom="@id/lblDiscountPrice"
+            android:layout_alignLeft="@id/lblDiscountName"
+            android:text="Rest Name"
+            android:textColor="@android:color/background_light"
+            android:textSize="10dp"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

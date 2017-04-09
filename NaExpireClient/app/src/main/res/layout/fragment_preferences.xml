@@ -83,7 +83,7 @@
         android:layout_marginTop="50dp"
         android:layout_below="@id/txtPrefPhone"
         android:hint="New Password"
-        android:inputType="text"/>
+        android:inputType="textPassword"/>
 
     <EditText
         android:id="@+id/txtPrefPassword2"
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/txtPrefPassword"
         android:hint="Confirm New Password"
-        android:inputType="text"/>
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btnPrefSave"

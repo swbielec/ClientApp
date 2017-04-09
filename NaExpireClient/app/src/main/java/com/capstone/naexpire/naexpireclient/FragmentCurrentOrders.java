@@ -22,12 +22,13 @@ import java.util.Random;
 
 public class FragmentCurrentOrders extends Fragment {
 
-    ListAdapterDiscounts adapter;
+    ListAdapterOrders adapter;
     ArrayList<String> itemname = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
     ArrayList<String> time = new ArrayList<String>();
-    ArrayList<String> price = new ArrayList<String>();
     ArrayList<String> prices = new ArrayList<String>();
+    ArrayList<String> image = new ArrayList<String>();
+    ArrayList<Double> distance = new ArrayList<Double>();
 
     public FragmentCurrentOrders() {
         // Required empty public constructor
@@ -41,26 +42,34 @@ public class FragmentCurrentOrders extends Fragment {
         View view = inflater.inflate(R.layout.fragment_current_orders, container, false);
         FragmentCurrentOrders.this.getActivity().setTitle("Current Orders"); //set title
 
+        adapter = new ListAdapterOrders(FragmentCurrentOrders.this.getContext());
+        ListView listview = (ListView) view.findViewById(R.id.lstOrdersCurrent);
+        listview.setAdapter(adapter);
+
         //dummy data
         itemname.add("Spaghetti\nBreadsticks");
         itemname.add("Cajun Coffee\nGyros");
         itemname.add("Spring Rolls\nShaken Beef\nSake");
-        prices.add("$9.32\n$3.04");
-        prices.add("$2.21\n$6.22");
-        prices.add("$13.12\n$10.20\n$3.07");
+        prices.add("9.32,3.04");
+        prices.add("2.21,6.22");
+        prices.add("13.12,10.20,3.07");
         restname.add("McFate Brewery");
         restname.add("Haji Baba");
         restname.add("Rice Paper");
         time.add("3:45pm 2/24/17");
         time.add("1:23pm 2/24/17");
         time.add("9:39am 2/24/17");
-        price.add("$12.36");
-        price.add("$8.43");
-        price.add("$16.39");
+        distance.add(12.5);
+        distance.add(3.5);
+        distance.add(7.3);
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/burger");
+        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
 
-        adapter = new ListAdapterDiscounts(FragmentCurrentOrders.this.getContext(), restname, time, price);
-        ListView listview = (ListView) view.findViewById(R.id.lstOrdersCurrent);
-        listview.setAdapter(adapter);
+        for(int i = 0; i < prices.size(); i++){
+            adapter.newItem(itemname.get(i), restname.get(i), image.get(i), prices.get(i), time.get(i),
+                    distance.get(i));
+        }
 
         Button past = (Button) view.findViewById(R.id.btnOrdersPast);
 
@@ -86,13 +95,13 @@ public class FragmentCurrentOrders extends Fragment {
                 Button orderDirec = (Button) dialogView.findViewById(R.id.btnCurrentDirections);
                 Button orderCall = (Button) dialogView.findViewById(R.id.btnCurrentCall);
 
-                itemName.setText(itemname.get(position));
-                orderprices.setText(prices.get(position));
-                restName.setText(restname.get(position));
+                itemName.setText(adapter.getName(position));
+                orderprices.setText(adapter.getPrice(position));
+                restName.setText(adapter.getRestaurant(position));
                 Random rnd = new Random();
                 orderid.setText("Order #"+(100000 + rnd.nextInt(900000)));
-                ordertotal.setText(price.get(position));
-                ordertime.setText("Placed at: "+time.get(position));
+                ordertotal.setText("$"+adapter.getTotal(position));
+                ordertime.setText("Placed at: "+adapter.getTime(position));
 
                 dialogBuilder.setView(dialogView);
                 final AlertDialog dialog = dialogBuilder.create();

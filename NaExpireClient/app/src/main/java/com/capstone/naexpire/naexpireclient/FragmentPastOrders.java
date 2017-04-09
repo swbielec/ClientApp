@@ -55,7 +55,7 @@ public class FragmentPastOrders extends Fragment {
         price.add("$11.21");
         price.add("$20.42");
 
-        adapter = new ListAdapterDiscounts(FragmentPastOrders.this.getContext(), restname, time, price);
+        adapter = new ListAdapterDiscounts(FragmentPastOrders.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstOrdersPast);
         listview.setAdapter(adapter);
 
