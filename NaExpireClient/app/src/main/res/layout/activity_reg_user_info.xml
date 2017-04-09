@@ -10,36 +10,36 @@
     android:focusableInTouchMode="true">
 
     <EditText
-        android:id="@+id/txtRegUserUsername"
+        android:id="@+id/txtRegUserFirst"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:hint="Username"
-        android:inputType="text"/>
+        android:hint="First Name"
+        android:inputType="textCapWords"/>
+
+    <EditText
+        android:id="@+id/txtRegUserLast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtRegUserFirst"
+        android:hint="Last Name"
+        android:inputType="textCapWords"/>
 
     <EditText
         android:id="@+id/txtRegUserEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtRegUserUsername"
+        android:layout_below="@id/txtRegUserLast"
         android:hint="Email"
         android:inputType="textEmailAddress"/>
-
-    <EditText
-        android:id="@+id/txtRegUserPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtRegUserEmail"
-        android:hint="Phone Number"
-        android:inputType="phone"/>
 
     <EditText
         android:id="@+id/txtRegUserPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtRegUserPhone"
+        android:layout_below="@id/txtRegUserEmail"
         android:hint="Password"
-        android:inputType="text"/>
+        android:inputType="textPassword"/>
 
     <EditText
         android:id="@+id/txtRegUserPassword2"
@@ -47,16 +47,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/txtRegUserPassword"
         android:hint="Confirm Password"
-        android:inputType="text"/>
+        android:inputType="textPassword"/>
 
     <Button
-        android:id="@+id/btnRegUserNext"
+        android:id="@+id/btnRegUserSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtRegUserPassword2"
         android:layout_alignParentRight="true"
-        android:onClick="clickNext"
-        android:text="Next"
+        android:onClick="clickSubmit"
+        android:text="Submit"
         android:textColor="@color/colorAccent"
         android:background="@android:color/transparent"/>
 
