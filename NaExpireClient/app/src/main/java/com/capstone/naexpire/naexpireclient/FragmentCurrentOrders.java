@@ -76,7 +76,7 @@ public class FragmentCurrentOrders extends Fragment {
         while(result.moveToNext()){
 
             adapter.newItem(result.getString(1),result.getString(2),result.getString(7),
-                        result.getString(5), "now", result.getString(3), result.getString(6));
+                        result.getString(5), result.getString(8), result.getString(3), result.getString(6));
         }
 
         dbCurrent.close();

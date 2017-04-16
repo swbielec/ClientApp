@@ -15,7 +15,8 @@ public class DatabaseHelperCurrentOrder extends SQLiteOpenHelper {
     static final String DESCRIPTION="description";
     static final String PRICE="price";
     static final String QUANTITY="quantity";
-    static final String IMAGE="image"; //7
+    static final String IMAGE="image";
+    static final String TIME="time"; //8
 
     public DatabaseHelperCurrentOrder(Context context) {
         super(context, DATABASE_NAME, null, SCHEMA);
@@ -25,7 +26,7 @@ public class DatabaseHelperCurrentOrder extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "+TABLE+" ("+ID+" TEXT, "+NAME+" TEXT, "+RESTAURANT+" TEXT,"+
                 ADDRESS+" TEXT, "+DESCRIPTION+" TEXT, "+PRICE+" TEXT, "+QUANTITY+" TEXT, "+
-                IMAGE+" TEXT);");
+                IMAGE+" TEXT, "+TIME+" TEXT);");
     }
 
     @Override

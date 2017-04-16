@@ -4,37 +4,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="100dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
+
+    <ImageView
+        android:id="@+id/imgCart"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop" />
 
     <ImageButton
         android:id="@+id/imgbtnCartDelete"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         app:srcCompat="@mipmap/ic_close_black_24dp"
         android:background="@android:color/transparent"/>
 
-    <TextView
-        android:id="@+id/lblCartPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/imgbtnCartDelete"
-        android:layout_marginRight="20dp"
-        android:text="$X.XX"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingLeft="15dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@id/imgbtnCartDelete"
+        android:layout_toRightOf="@id/imgCart">
 
         <TextView
             android:id="@+id/lblCartQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xx"/>
+            android:text="Xx"
+            android:textSize="20dp"/>
 
         <TextView
             android:id="@+id/lblCartName"
@@ -42,7 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/lblCartQuantity"
             android:layout_marginLeft="5dp"
-            android:text="Item Name"/>
+            android:text="Item Name"
+            android:textSize="20dp"/>
 
         <TextView
             android:id="@+id/lblCartRestName"
@@ -50,7 +52,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/lblCartName"
             android:text="Restaurant Name"
-            android:textSize="8dp"/>
+            android:textSize="12dp"/>
+
+        <TextView
+            android:id="@+id/lblCartPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_below="@id/lblCartRestName"
+            android:layout_marginRight="12dp"
+            android:text="$X.XX each"/>
 
     </RelativeLayout>
 

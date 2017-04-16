@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 public class FragmentDeals extends Fragment {
     DatabaseHelperDeals dbHelperDeals = null;
     DatabaseHelperCart dbHelperCart = null;
+
+    ImageButton goToCart;
 
     ListAdapterDeals adapter;
     ArrayList<String> name = new ArrayList<String>();
@@ -48,7 +53,7 @@ public class FragmentDeals extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_discounts, container, false);
+        View view =  inflater.inflate(R.layout.fragment_deals, container, false);
 
         dbHelperDeals = new DatabaseHelperDeals(getActivity().getApplicationContext());
         dbHelperCart = new DatabaseHelperCart(getActivity().getApplicationContext());
@@ -58,6 +63,8 @@ public class FragmentDeals extends Fragment {
         adapter = new ListAdapterDeals(FragmentDeals.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstDiscounts);
         listview.setAdapter(adapter);
+
+        goToCart = (ImageButton) view.findViewById(R.id.imgbtnCart);
 
         //spinner to select filter method for menu items
         Spinner spinner = (Spinner) view.findViewById(R.id.spnFilter);
@@ -145,9 +152,6 @@ public class FragmentDeals extends Fragment {
             values.put("quantity", q);
             db.insert("deals", null, values);
 
-            if(q > 0)
-                adapter.newItem(name.get(i),price.get(i),restname.get(i), image.get(i), description.get(i),
-                    distance.get(i), q);
         }
         db.close();*/
 
@@ -265,6 +269,15 @@ public class FragmentDeals extends Fragment {
                         dialog.dismiss();
                     }
                 });
+            }
+        });
+
+        goToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentShoppingCart fragmentShoppingCart = new FragmentShoppingCart();
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                manager.beginTransaction().replace(R.id.fragment_container, fragmentShoppingCart).commit();
             }
         });
 

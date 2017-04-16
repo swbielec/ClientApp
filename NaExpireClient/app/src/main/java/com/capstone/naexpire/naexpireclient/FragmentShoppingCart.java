@@ -15,7 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class FragmentShoppingCart extends Fragment {
@@ -63,7 +66,7 @@ public class FragmentShoppingCart extends Fragment {
             restname.add(result.getString(2));
             price.add("$"+result.getString(5));
             quantity.add(result.getString(6));
-            adapter.newItem(result.getString(1), result.getString(2),
+            adapter.newItem(result.getString(1), result.getString(2), result.getString(7),
                     Double.parseDouble(result.getString(5)), Integer.parseInt(result.getString(6)));
         }
 
@@ -85,6 +88,11 @@ public class FragmentShoppingCart extends Fragment {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+                Date date = new Date();
+                String dateTime = dateFormat.format(date);
+
                 //put all info in current orders db
                 SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
                 ContentValues values = new ContentValues();
@@ -92,9 +100,9 @@ public class FragmentShoppingCart extends Fragment {
                 values.put("name", adapter.getAllItemNames());
                 values.put("restaurant", adapter.getAllRestaurantNames());
                 //values.put("address", adapter.getDistance(position));
-                //values.put("description", adapter.getDescription(position));
+                values.put("time", dateTime);
                 values.put("price", adapter.getAllPrices());
-                //values.put("image", adapter.getImage(position));
+                values.put("image", adapter.getImage(0));
                 values.put("quantity", adapter.getAllQuantities());
                 dbCurrent.insert("currentOrders", null, values);
                 dbCurrent.close();
@@ -125,7 +133,7 @@ public class FragmentShoppingCart extends Fragment {
 
         db.close();
 
-        Toast.makeText(FragmentShoppingCart.this.getContext(), selectionArgs[0] + " deal removed from cart.",
+        Toast.makeText(FragmentShoppingCart.this.getContext(), selectionArgs[0] + " removed from cart.",
                 Toast.LENGTH_SHORT).show();
     }
 

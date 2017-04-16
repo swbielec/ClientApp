@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
@@ -48,6 +51,7 @@ public class ListAdapterCart extends BaseAdapter {
 
     public class Holder {
         TextView in, rn, pr, qu;
+        ImageView im;
         ImageButton ex;
     }
 
@@ -59,12 +63,14 @@ public class ListAdapterCart extends BaseAdapter {
         holder.rn = (TextView) rowView.findViewById(R.id.lblCartRestName);
         holder.pr = (TextView) rowView.findViewById(R.id.lblCartPrice);
         holder.qu = (TextView) rowView.findViewById(R.id.lblCartQuantity);
+        holder.im = (ImageView) rowView.findViewById(R.id.imgCart);
         holder.ex = (ImageButton) rowView.findViewById(R.id.imgbtnCartDelete);
 
         holder.in.setText(items.get(position).getItemName());
         holder.rn.setText(items.get(position).getRestaurantName());
-        holder.pr.setText("$"+items.get(position).getPrice());
+        holder.pr.setText("$"+items.get(position).getPrice()+" each");
         holder.qu.setText(items.get(position).getQuantity()+"x");
+        Glide.with(context).load(items.get(position).getImage()).into(holder.im);
 
         holder.ex.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,47 +92,61 @@ public class ListAdapterCart extends BaseAdapter {
         return "Subtotal: $"+decimalFormat.format(sum);
     }
 
-    public void newItem(String itemName, String restaurantName, double price, int quantity){
-        items.add(new Item(itemName, restaurantName, price, quantity));
+    public void newItem(String itemName, String restaurantName, String image, double price,
+                        int quantity){
+        items.add(new Item(itemName, restaurantName, image, price, quantity));
         notifyDataSetChanged();
     }
 
     public String getItemName(int position){return items.get(position).getItemName();}
     public String getRestaurantName(int position){return items.get(position).getRestaurantName();}
+    public String getImage(int position){return items.get(position).getImage();}
     public double getPrice(int position){return items.get(position).getPrice();}
     public int getQuantity(int position){return items.get(position).getQuantity();}
 
     public String getAllItemNames(){
         String names = "";
-        if(items.size()>0) names += items.get(0).getItemName();
-        for(int i = 1; i < items.size(); i++){
-            names += ","+items.get(i).getItemName();
+        if(items.size()>0){
+            names += items.get(0).getItemName();
+            for(int i = 1; i < items.size(); i++){
+                names += ","+items.get(i).getItemName();
+            }
+            return names;
         }
-        return names;
+        else return getItemName(0);
     }
     public String getAllRestaurantNames(){
         String names = "";
-        if(items.size()>0) names += items.get(0).getRestaurantName();
-        for(int i = 1; i < items.size(); i++){
-            names += ","+items.get(i).getRestaurantName();
+        if(items.size()>0){
+            names += items.get(0).getRestaurantName();
+            for(int i = 1; i < items.size(); i++){
+                names += ","+items.get(i).getRestaurantName();
+            }
+            return names;
         }
-        return names;
+        else return getRestaurantName(0);
     }
     public String getAllPrices(){
         String prices = "";
-        if(items.size()>0) prices += items.get(0).getPrice();
-        for(int i = 1; i < items.size(); i++){
-            prices += ","+items.get(i).getPrice();
+        if(items.size()>0) {
+            prices += items.get(0).getPrice();
+            for(int i = 1; i < items.size(); i++){
+                prices += ","+items.get(i).getPrice();
+            }
+            return prices;
         }
-        return prices;
+        else return ""+getPrice(0);
     }
     public String getAllQuantities(){
         String quantities = "";
-        if(items.size()>0) quantities += items.get(0).getQuantity();
-        for(int i = 1; i < items.size(); i++){
-            quantities += ","+items.get(i).getQuantity();
+        if(items.size()>0){
+            quantities += items.get(0).getQuantity();
+            for(int i = 1; i < items.size(); i++){
+                quantities += ","+items.get(i).getQuantity();
+            }
+            return quantities;
         }
-        return quantities;
+        else return ""+getQuantity(0);
     }
 
     public void setItemName(int position, String itemName){items.get(position).setItemName(itemName);}
@@ -141,31 +161,35 @@ public class ListAdapterCart extends BaseAdapter {
     }
 
     public class Item{
-        private String itemName, restaurantName;
+        private String itemName, restaurantName, image;
         private double price;
         private int quantity;
 
         Item(){
             itemName = "";
             restaurantName = "";
+            image = "";
             price = 0.0;
             quantity = 0;
         }
 
-        Item(String itemName, String restaurantName, double price, int quantity){
+        Item(String itemName, String restaurantName, String image, double price, int quantity){
             this.itemName = itemName;
             this.restaurantName = restaurantName;
+            this.image = image;
             this.price = price;
             this.quantity = quantity;
         }
 
         String getItemName(){return itemName;}
         String getRestaurantName(){return restaurantName;}
+        String getImage(){return image;}
         double getPrice(){return price;}
         int getQuantity(){return quantity;}
 
         void setItemName(String itemName){this.itemName = itemName;}
         void setRestaurantName(String restaurantName){this.restaurantName = restaurantName;}
+        void setImage(String image){this.image = image;}
         void setPrice(double price){this.price = price;}
         void setQuantity(int quantity){this.quantity = quantity;}
     }

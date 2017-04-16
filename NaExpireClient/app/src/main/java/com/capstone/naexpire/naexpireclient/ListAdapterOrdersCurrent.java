@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -112,20 +113,42 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
             this.address = address;
             this.quantity = quantity;
             String[] strPrices = price.split(",");
+            String[] quantities = quantity.split(",");
+            total = 0.0;
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
             for(int q = 0; q < strPrices.length; q++){
-                total += Double.parseDouble(strPrices[q]);
+                total += Double.parseDouble(strPrices[q]) * Integer.parseInt(quantities[q]);
+            }
+            total = Double.parseDouble(decimalFormat.format(total));
+        }
+        String getItemName(){
+            String[] s = itemName.split(",");
+            String[] q = quantity.split(",");
+            String result = q[0]+"x "+s[0];
+            if(s.length == 1) return result;
+            else{
+                for(int i = 1; i < s.length; i++){
+                    result += "\n"+q[i]+"x "+s[i];
+                }
+                return result;
             }
         }
-        String getItemName(){return itemName;}
-        String getRestaurantName(){return restaurantName;}
+        String getRestaurantName(){
+            String[] s = restaurantName.split(",");
+            if (s.length > 1) return s[0]+" +"+(s.length-1)+" more";
+            else return s[0];
+        }
         String getImage(){return image;}
         String getPrice(){
             String[] s = price.split(",");
-            String formattedPrice = "";
-            for(int t = 0; t< s.length;t++){
-                formattedPrice += "$"+s[t]+"\n";
+            String formattedPrice = "$"+s[0];
+            if(s.length == 1) return formattedPrice;
+            else{
+                for(int t = 1; t< s.length;t++){
+                    formattedPrice += "\n$"+s[t];
+                }
+                return formattedPrice;
             }
-            return formattedPrice;
         }
         String getTime(){return time;}
         String getAddress(){return address;}
