@@ -24,4 +24,6 @@
         <activity android:name=".ActivityRegFoodTypes"></activity>
     </application>
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
 </manifest>
