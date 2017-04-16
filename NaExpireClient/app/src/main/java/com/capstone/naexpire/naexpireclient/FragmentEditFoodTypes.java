@@ -1,6 +1,8 @@
 package com.capstone.naexpire.naexpireclient;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +17,6 @@ import java.util.ArrayList;
 
 
 public class FragmentEditFoodTypes extends Fragment {
-
     ListAdapterFoods adapter;
     ArrayList<String> foods = new ArrayList<String>();
     ArrayList<String> checked = new ArrayList<String>();
@@ -31,12 +32,33 @@ public class FragmentEditFoodTypes extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_foods, container, false);
 
+        final SharedPreferences sharedPref = getActivity().getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
+
         //dummy data
         foods.add("Mexican");
         foods.add("Cajun");
         foods.add("Vietnamese");
         foods.add("Chinese");
         foods.add("Mediterranean");
+        foods.add("Japanese");
+        foods.add("Indian");
+        foods.add("Korean");
+        foods.add("Italian");
+        foods.add("Thai");
+        foods.add("Greek");
+        foods.add("Lebanese");
+        foods.add("Moroccan");
+        foods.add("French");
+        foods.add("Spanish");
+        foods.add("German");
+        foods.add("Turkish");
+        foods.add("Caribbean");
+
+        String[] savedFoods  = sharedPref.getString("foods", "").split(",");
+        for(int i = 0; i < savedFoods.length; i++){
+            checked.add(savedFoods[i]);
+        }
 
         adapter = new ListAdapterFoods(FragmentEditFoodTypes.this.getContext(), foods, checked);
         final ListView listView = (ListView) view.findViewById(R.id.lstPrefFoods);
@@ -57,6 +79,15 @@ public class FragmentEditFoodTypes extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checked = adapter.getChecked();
+                String allChecked = checked.get(0);
+                for(int i = 1; i < checked.size(); i++){
+                    allChecked += ","+checked.get(i);
+                }
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("foods", allChecked);
+                editor.commit();
+
                 Toast.makeText(FragmentEditFoodTypes.this.getContext(), "Changes Saved", Toast.LENGTH_SHORT).show();
             }
         });
