@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_above="@id/btnCartPlace"
-        android:text="Back to Discounts"
+        android:text="Back to Deals"
         android:textColor="@android:color/background_light"
         android:background="@color/colorAccent"/>
 

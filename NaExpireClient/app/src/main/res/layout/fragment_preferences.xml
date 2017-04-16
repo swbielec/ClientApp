@@ -30,78 +30,91 @@
         android:textColor="@color/colorAccent"
         android:background="@android:color/transparent"/>
 
-    <TextView
-        android:id="@+id/lblPrefUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_below="@id/btnPrefFoods"
-        android:text="Username"/>
-
-    <EditText
-        android:id="@+id/txtPrefUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lblPrefUsername"
-        android:hint="Username"
-        android:inputType="text"/>
-
-    <TextView
-        android:id="@+id/lblPrefEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtPrefUsername"
-        android:text="Email"/>
-
-    <EditText
-        android:id="@+id/txtPrefEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lblPrefEmail"
-        android:hint="Email"
-        android:inputType="textEmailAddress"/>
-
-    <TextView
-        android:id="@+id/lblPrefPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtPrefEmail"
-        android:text="Phone"/>
-
-    <EditText
-        android:id="@+id/txtPrefPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lblPrefPhone"
-        android:hint="Phone Number"
-        android:inputType="phone"/>
-
-    <EditText
-        android:id="@+id/txtPrefPassword"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_below="@id/txtPrefPhone"
-        android:hint="New Password"
-        android:inputType="textPassword"/>
+        android:layout_below="@id/btnPrefFoods">
 
-    <EditText
-        android:id="@+id/txtPrefPassword2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtPrefPassword"
-        android:hint="Confirm New Password"
-        android:inputType="textPassword"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnPrefSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtPrefPassword2"
-        android:layout_centerHorizontal="true"
-        android:text="Save Changes"
-        android:textColor="@color/colorAccent"
-        android:background="@android:color/transparent"/>
+            <TextView
+                android:id="@+id/lblPrefUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Username"/>
+
+            <EditText
+                android:id="@+id/txtPrefUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblPrefUsername"
+                android:hint="Username"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/lblPrefEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefUsername"
+                android:text="Email"/>
+
+            <EditText
+                android:id="@+id/txtPrefEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblPrefEmail"
+                android:hint="Email"
+                android:inputType="textEmailAddress"/>
+
+            <TextView
+                android:id="@+id/lblPrefPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefEmail"
+                android:text="Phone"/>
+
+            <EditText
+                android:id="@+id/txtPrefPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblPrefPhone"
+                android:hint="Phone Number"
+                android:inputType="phone"/>
+
+            <EditText
+                android:id="@+id/txtPrefPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_below="@id/txtPrefPhone"
+                android:hint="New Password"
+                android:inputType="textPassword"/>
+
+            <EditText
+                android:id="@+id/txtPrefPassword2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefPassword"
+                android:hint="Confirm New Password"
+                android:inputType="textPassword"/>
+
+            <Button
+                android:id="@+id/btnPrefSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefPassword2"
+                android:layout_centerHorizontal="true"
+                android:text="Save Changes"
+                android:textColor="@color/colorAccent"
+                android:background="@android:color/transparent"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 
 </RelativeLayout>

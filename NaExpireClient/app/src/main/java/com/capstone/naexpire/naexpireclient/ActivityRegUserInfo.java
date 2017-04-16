@@ -1,6 +1,8 @@
 package com.capstone.naexpire.naexpireclient;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActivityRegUserInfo extends AppCompatActivity {
+    private SharedPreferences sharedPref;
 
     EditText firstName, lastName, email, password, confirmPass;
 
@@ -18,6 +21,9 @@ public class ActivityRegUserInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg_user_info);
+
+        sharedPref = getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
 
         setTitle("Register"); //set activity title
 
@@ -43,6 +49,14 @@ public class ActivityRegUserInfo extends AppCompatActivity {
         Boolean match = password.getText().toString().equals(confirmPass.getText().toString());
 
         if(ready && valid && match){
+            //put values in shared preferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("firstName", firstName.getText().toString());
+            editor.putString("lastName", lastName.getText().toString());
+            editor.putString("email", email.getText().toString());
+            editor.putString("password", password.getText().toString());
+            editor.commit();
+
             Toast.makeText(this, "A verification link has been sent to your email", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, ActivityLogin.class);

@@ -1,6 +1,8 @@
 package com.capstone.naexpire.naexpireclient;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +15,7 @@ import android.widget.Toast;
 
 
 public class FragmentPreferences extends Fragment {
-
+    private SharedPreferences sharedPref;
 
     public FragmentPreferences() {
         // Required empty public constructor
@@ -26,16 +28,19 @@ public class FragmentPreferences extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_preferences, container, false);
 
+        sharedPref = getActivity().getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
+
         FragmentPreferences.this.getActivity().setTitle("Preferences"); //set title
 
-        EditText username = (EditText) view.findViewById(R.id.txtPrefUsername);
-        EditText email = (EditText) view.findViewById(R.id.txtPrefEmail);
-        EditText phone = (EditText) view.findViewById(R.id.txtPrefPhone);
+        final EditText username = (EditText) view.findViewById(R.id.txtPrefUsername);
+        final EditText email = (EditText) view.findViewById(R.id.txtPrefEmail);
+        final EditText phone = (EditText) view.findViewById(R.id.txtPrefPhone);
         Button foods = (Button) view.findViewById(R.id.btnPrefFoods);
         Button save = (Button) view.findViewById(R.id.btnPrefSave);
 
-        username.setText("BenL");
-        email.setText("linus@gmail.com");
+        username.setText(sharedPref.getString("username", ""));
+        email.setText(sharedPref.getString("email", ""));
         phone.setText("4808377049");
 
         foods.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +55,13 @@ public class FragmentPreferences extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("username", username.getText().toString());
+                editor.putString("email", email.getText().toString());
+                editor.putString("phone", phone.getText().toString());
+                //editor.putString("password", password.getText().toString());
+                editor.commit();
+
                 Toast.makeText(FragmentPreferences.this.getContext(), "Changes Saved", Toast.LENGTH_SHORT).show();
             }
         });

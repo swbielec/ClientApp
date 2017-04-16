@@ -6,25 +6,36 @@
     android:padding="5dp"
     tools:context="com.capstone.naexpire.naexpireclient.FragmentDiscounts">
 
-    <TextView
-        android:id="@+id/lblFilterBy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filter by:"/>
-
-    <Spinner
-        android:id="@+id/spnFilter"
+    <RelativeLayout
+        android:id="@+id/rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/lblFilterBy"
-        android:layout_marginLeft="5dp"/>
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/lblFilterBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:text="Filter by:"
+            android:textSize="16dp"/>
+
+        <Spinner
+            android:id="@+id/spnFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/lblFilterBy" />
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/lstDiscounts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:layout_below="@id/spnFilter"
+        android:layout_below="@id/rl"
         android:divider="@null"
         android:dividerHeight="5dp"/>
 </RelativeLayout>
