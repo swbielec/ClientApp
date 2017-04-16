@@ -232,7 +232,7 @@ public class FragmentDeals extends Fragment {
 
                         boolean exists = false;
                         for(int i = 0; i < cartNames.size(); i++){
-                            if((cartNames.get(i)).equals(adapter.getName(position))){
+                            if((cartNames.get(i).trim()).equals(adapter.getName(position).trim())){
                                 exists = true;
                                 cartAmount = cartQuantities.get(i);
                             }
@@ -266,6 +266,7 @@ public class FragmentDeals extends Fragment {
                         if(newNum == 0){
                             adapter.deleteItem(position);
                         }
+                        else adapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });

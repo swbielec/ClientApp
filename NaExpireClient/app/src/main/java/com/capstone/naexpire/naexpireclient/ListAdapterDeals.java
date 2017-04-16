@@ -111,22 +111,24 @@ public class ListAdapterDeals extends BaseAdapter {
     }
 
     public class Holder{
-        TextView in, rn, pr;
+        TextView in, rn, pr, dl;
         ImageView im;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
         Holder holder = new ListAdapterDeals.Holder();
-        final View rowView = inflater.inflate(R.layout.list_discounts, null);
+        final View rowView = inflater.inflate(R.layout.list_deals, null);
         holder.in=(TextView) rowView.findViewById(R.id.lblDiscountName);
         holder.rn=(TextView) rowView.findViewById(R.id.lblDiscountRest);
         holder.pr=(TextView) rowView.findViewById(R.id.lblDiscountPrice);
+        holder.dl=(TextView) rowView.findViewById(R.id.lblDiscountQuantity);
         holder.im=(ImageView) rowView.findViewById(R.id.imgDiscountPicture);
 
         holder.in.setText(discounts.get(position).getName());
         holder.rn.setText(discounts.get(position).getRestaurant());
         holder.pr.setText("$"+discounts.get(position).getPrice());
+        holder.dl.setText(discounts.get(position).getQuantity()+"x");
         Glide.with(context).load(discounts.get(position).getImage()).into(holder.im);
 
         return rowView;
