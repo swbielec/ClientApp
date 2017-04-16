@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ListAdapterDiscounts extends BaseAdapter {
+public class ListAdapterDeals extends BaseAdapter {
 
     ArrayList<Discount> discounts;
     Context context;
 
     private static LayoutInflater inflater = null;
 
-    public ListAdapterDiscounts(Context c){
+    public ListAdapterDeals(Context c){
         discounts = new ArrayList<>();
         context = c;
 
@@ -117,7 +117,7 @@ public class ListAdapterDiscounts extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
-        Holder holder = new ListAdapterDiscounts.Holder();
+        Holder holder = new ListAdapterDeals.Holder();
         final View rowView = inflater.inflate(R.layout.list_discounts, null);
         holder.in=(TextView) rowView.findViewById(R.id.lblDiscountName);
         holder.rn=(TextView) rowView.findViewById(R.id.lblDiscountRest);

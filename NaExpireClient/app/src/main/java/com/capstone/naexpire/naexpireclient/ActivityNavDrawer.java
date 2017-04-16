@@ -1,9 +1,9 @@
 package com.capstone.naexpire.naexpireclient;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -12,15 +12,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 public class ActivityNavDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private SharedPreferences sharedPref;
 
-    String username = "Tom";
-    String email = "tom@gmail.com";
+    TextView title, detail;
 
     NavigationView navigationView = null;
     Toolbar toolbar = null;
@@ -30,9 +29,12 @@ public class ActivityNavDrawer extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
-        FragmentDiscounts fragmentDiscounts = new FragmentDiscounts();
+        sharedPref = getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
+
+        FragmentDeals fragmentDeals = new FragmentDeals();
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.fragment_container, fragmentDiscounts).commit();
+        manager.beginTransaction().replace(R.id.fragment_container, fragmentDeals).commit();
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -49,11 +51,12 @@ public class ActivityNavDrawer extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
 
-        TextView name = (TextView) header.findViewById(R.id.lblDrawerUsername);
-        TextView eml = (TextView) header.findViewById(R.id.lblDrawerEmail);
+        title = (TextView) header.findViewById(R.id.lblDrawerUsername);
+        detail = (TextView) header.findViewById(R.id.lblDrawerEmail);
 
-        name.setText(username);
-        eml.setText(email);
+        title.setText(sharedPref.getString("firstName", "Shmeggle") +" "+
+        sharedPref.getString("lastName", "TeaBoot"));
+        detail.setText(sharedPref.getString("email", ""));
     }
 
     @Override
@@ -73,9 +76,9 @@ public class ActivityNavDrawer extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_discounts) {
-            FragmentDiscounts fragmentDiscounts = new FragmentDiscounts();
+            FragmentDeals fragmentDeals = new FragmentDeals();
             FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.fragment_container, fragmentDiscounts).commit();
+            manager.beginTransaction().replace(R.id.fragment_container, fragmentDeals).commit();
         } else if (id == R.id.nav_shopping_cart) {
             FragmentShoppingCart fragmentShoppingCart = new FragmentShoppingCart();
             FragmentManager manager = getSupportFragmentManager();

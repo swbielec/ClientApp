@@ -42,17 +42,17 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
         return position;
     }
 
-    public String getName(int position){ return orders.get(position).getName(); }
-    public String getRestaurant(int position){ return orders.get(position).getRestaurant(); }
+    public String getItemName(int position){ return orders.get(position).getItemName(); }
+    public String getRestaurantName(int position){ return orders.get(position).getRestaurantName(); }
     public String getImage(int position){ return orders.get(position).getImage(); }
     public String getPrice(int position){ return orders.get(position).getPrice(); }
     public String getTime(int position){ return orders.get(position).getTime(); }
-    public double getDistance(int position){ return orders.get(position).getDistance(); }
+    public String getAddress(int position){ return orders.get(position).getAddress(); }
     public double getTotal(int position){ return orders.get(position).getTotal(); }
 
-    public void newItem(String name, String restaurant, String image, String price, String time,
-                        double distance) {
-        orders.add(new Order(name, restaurant, image, price, time, distance));
+    public void newItem(String itemName, String restaurantName, String image, String price, String time,
+                        String address, String quantity) {
+        orders.add(new Order(itemName, restaurantName, image, price, time, address, quantity));
         notifyDataSetChanged();
     }
 
@@ -79,7 +79,7 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
         holder.pr=(TextView) rowView.findViewById(R.id.lblOrdersPrice);
         holder.im=(ImageView) rowView.findViewById(R.id.imgOrdersPic);
 
-        holder.rn.setText(orders.get(position).getRestaurant());
+        holder.rn.setText(orders.get(position).getRestaurantName());
         holder.tm.setText(orders.get(position).getTime());
         holder.pr.setText("$"+orders.get(position).getTotal());
         Glide.with(context).load(orders.get(position).getImage()).into(holder.im);
@@ -88,33 +88,36 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
     }
 
     public class Order{
-        private String names, restaurant, image, price, time;
-        private double distance, total;
+        private String itemName, restaurantName, image, price, time, address, quantity;
+        private double total;
 
         Order(){
-            names = "";
-            restaurant = "";
+            itemName = "";
+            restaurantName = "";
             image = "";
-            distance = 0.0;
+            address = "";
             price = "";
             time = "";
             total = 0.00;
+            quantity = "";
         }
 
-        Order(String n, String r, String i, String p, String t, double d){
-            names = n;
-            restaurant = r;
-            image = i;
-            price  = p;
-            time = t;
-            distance = d;
-            String[] strPrices = p.split(",");
+        Order(String itemName, String restaurantName, String image, String price, String time,
+              String address, String quantity){
+            this.itemName = itemName;
+            this.restaurantName = restaurantName;
+            this.image = image;
+            this.price  = price;
+            this.time = time;
+            this.address = address;
+            this.quantity = quantity;
+            String[] strPrices = price.split(",");
             for(int q = 0; q < strPrices.length; q++){
                 total += Double.parseDouble(strPrices[q]);
             }
         }
-        String getName(){return names;}
-        String getRestaurant(){return restaurant;}
+        String getItemName(){return itemName;}
+        String getRestaurantName(){return restaurantName;}
         String getImage(){return image;}
         String getPrice(){
             String[] s = price.split(",");
@@ -125,14 +128,16 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
             return formattedPrice;
         }
         String getTime(){return time;}
-        Double getDistance(){return distance;}
+        String getAddress(){return address;}
+        String getQuantity(){return quantity;}
         Double getTotal(){return total;}
 
-        void setName(String n){names = n;}
-        void setRestaurant(String r){restaurant = r;}
-        void setImage(String i){image = i;}
-        void setPrice(String p){price = p;}
-        void setDistance(Double d){distance = d;}
+        void setItemName(String itemName){this.itemName = itemName;}
+        void setRestaurantName(String restaurantName){this.restaurantName = restaurantName;}
+        void setImage(String image){this.image = image;}
+        void setPrice(String price){this.price = price;}
+        void setAddress(String address){this.address = address;}
+        void setQuantity(String quantity){this.quantity = quantity;}
         void setTotal(double t){total = t;}
     }
 }

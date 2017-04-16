@@ -37,7 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/lblInfoItemName"
         android:layout_marginLeft="5dp"
-        android:text="Restaurant Name"/>
+        android:text="Restaurant Name"
+        android:textSize="16dp"/>
 
     <TextView
         android:id="@+id/lblInfoDistance"
@@ -45,7 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/lblInfoRestName"
         android:layout_marginLeft="5dp"
-        android:text="Distance"/>
+        android:text="Distance"
+        android:textSize="16dp"/>
 
     <TextView
         android:id="@+id/lblInfoDescription"
@@ -54,31 +56,41 @@
         android:layout_below="@id/lblInfoDistance"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
-        android:text="Description"/>
+        android:text="Description"
+        android:textSize="16dp"/>
 
-    <TextView
-        android:id="@+id/lblInfoQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/lblInfoDescription"
-        android:layout_marginLeft="5dp"
-        android:text="Quantity:"/>
-
-    <Spinner
-        android:id="@+id/spnInfoQuantity"
+    <RelativeLayout
+        android:id="@+id/rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_below="@id/lblInfoDescription"
-        android:layout_toRightOf="@id/lblInfoQuantity" />
+        android:layout_height="50dp"
+        android:layout_below="@id/lblInfoDescription">
+
+        <TextView
+            android:id="@+id/lblInfoQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:text="Quantity:"
+            android:textSize="16dp"/>
+
+        <Spinner
+            android:id="@+id/spnInfoQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/lblInfoQuantity" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btnInfoCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_below="@id/spnInfoQuantity"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/rl"
         android:text="Add to Cart"
         android:textColor="@android:color/background_light"
         android:background="@color/colorAccent"/>
