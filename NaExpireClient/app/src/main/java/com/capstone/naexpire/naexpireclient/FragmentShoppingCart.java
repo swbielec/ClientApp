@@ -153,6 +153,7 @@ public class FragmentShoppingCart extends Fragment {
                             dbDeals.close();
                             adapter.setCartQuantity(position, newAmount);
                             adapter.notifyDataSetChanged();
+                            subtotal.setText(adapter.updateSubtotal());
                         }
                         dialog.dismiss();
                     }
