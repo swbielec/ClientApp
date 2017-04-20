@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class FragmentPreferences extends Fragment {
     private SharedPreferences sharedPref;
@@ -38,12 +41,14 @@ public class FragmentPreferences extends Fragment {
         final EditText username = (EditText) view.findViewById(R.id.txtPrefUsername);
         final EditText email = (EditText) view.findViewById(R.id.txtPrefEmail);
         final EditText phone = (EditText) view.findViewById(R.id.txtPrefPhone);
+        final EditText password = (EditText) view.findViewById(R.id.txtPrefPassword);
+        final EditText cPassword = (EditText) view.findViewById(R.id.txtPrefPassword2);
         Button foods = (Button) view.findViewById(R.id.btnPrefFoods);
         Button save = (Button) view.findViewById(R.id.btnPrefSave);
 
         username.setText(sharedPref.getString("username", ""));
         email.setText(sharedPref.getString("email", ""));
-        phone.setText("4808377049");
+        phone.setText(sharedPref.getString("phone", ""));
 
         foods.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +66,14 @@ public class FragmentPreferences extends Fragment {
                 editor.putString("username", username.getText().toString());
                 editor.putString("email", email.getText().toString());
                 editor.putString("phone", phone.getText().toString());
-                //editor.putString("password", password.getText().toString());
+                if(isValidPassword(password.getText().toString())){
+                    if(password.getText().toString().equals(cPassword.getText().toString()))
+                        editor.putString("password", password.getText().toString());
+                    else Toast.makeText(FragmentPreferences.this.getContext(), "Passwords do not match.", Toast.LENGTH_SHORT).show();
+                }
+                else Toast.makeText(FragmentPreferences.this.getContext(),
+                        "Password must have at least:\n\t8 Characters\n\t1 Capital\n\t1 Number\n\t1 Special Character",
+                        Toast.LENGTH_SHORT).show();
                 editor.commit();
 
                 //update restaurant name in the navigation drawer
@@ -78,4 +90,16 @@ public class FragmentPreferences extends Fragment {
         return view;
     }
 
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        //needs a cap, number, special char, and 8+ chars total
+        final String PASSWORD_PATTERN = "((?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,})";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }
 }

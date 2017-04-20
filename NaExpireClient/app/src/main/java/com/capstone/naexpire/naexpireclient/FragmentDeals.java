@@ -2,6 +2,8 @@ package com.capstone.naexpire.naexpireclient;
 
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -28,20 +31,20 @@ import java.util.ArrayList;
 
 public class FragmentDeals extends Fragment {
     DatabaseHelperDeals dbHelperDeals = null;
-    DatabaseHelperCart dbHelperCart = null;
+
+    private SharedPreferences sharedPref;
 
     ImageButton goToCart;
 
     ListAdapterDeals adapter;
+    ArrayList<String> itemId = new ArrayList<>();
     ArrayList<String> name = new ArrayList<String>();
     ArrayList<Double> price = new ArrayList<Double>();
     ArrayList<String> description = new ArrayList<String>();
     ArrayList<String> restname = new ArrayList<String>();
-    ArrayList<Double> distance = new ArrayList<Double>();
+    ArrayList<String> address = new ArrayList<>();
     ArrayList<Integer> quantity = new ArrayList<Integer>();
     ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> cartNames = new ArrayList<String>();
-    ArrayList<Integer> cartQuantities = new ArrayList<Integer>();
 
 
     public FragmentDeals() {
@@ -55,8 +58,10 @@ public class FragmentDeals extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_deals, container, false);
 
+        sharedPref = getActivity().getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
+
         dbHelperDeals = new DatabaseHelperDeals(getActivity().getApplicationContext());
-        dbHelperCart = new DatabaseHelperCart(getActivity().getApplicationContext());
 
         FragmentDeals.this.getActivity().setTitle("Discounts"); //set activity title
 
@@ -76,103 +81,132 @@ public class FragmentDeals extends Fragment {
 
         //get discounts from database & put them in arraylists
 
-        //get if items are in cart to subtract form deals quantity totals
-        SQLiteDatabase dbCart = dbHelperCart.getReadableDatabase();
+        //initial data to be inserted once on the first time the app is run to set up dummy data
+        //only to be used while there are no endpoints to get real deals data
+        //Toast.makeText(FragmentDeals.this.getContext(), ""+sharedPref.getInt("fromRegister", 0), Toast.LENGTH_SHORT).show();
+        if(sharedPref.getInt("fromRegister", 0) == 2){
+            itemId.add("0");
+            itemId.add("1");
+            itemId.add("2");
+            itemId.add("3");
+            itemId.add("4");
+            itemId.add("5");
+            name.add("Beef Taco");
+            name.add("Caesar Salad");
+            name.add("Chicken Taco");
+            name.add("Cheeseburger");
+            name.add("Shrimp Taco");
+            name.add("Spaghetti Carbonara");
+            restname.add("Chicken on a Stick");
+            restname.add("DJ's Bagels");
+            restname.add("Raising Canes");
+            restname.add("In n Out");
+            restname.add("Fiesta Burrito");
+            restname.add("Noodles and Company");
+            price.add(1.23);
+            price.add(3.43);
+            price.add(2.34);
+            price.add(2.67);
+            price.add(3.45);
+            price.add(2.35);
+            description.add("Taco with beef");
+            description.add("Leafy greens");
+            description.add("Taco with chicken");
+            description.add("Burger with cheese");
+            description.add("Taco with shrimp");
+            description.add("Pasta with pasta sauce");
+            address.add("3133 N Scottsdale Rd, Scottsdale, AZ 85251");
+            address.add("13693 N Fountain Hills Blvd, Fountain Hills, AZ 85268");
+            address.add("960 E University Dr, Tempe, AZ 85281");
+            address.add("920 E Playa Del Norte Dr, Tempe, AZ 85281");
+            address.add("7402 E McDowell Rd, Scottsdale, AZ 85257");
+            address.add("2000 E Rio Salado Pkwy, Tempe, AZ 85281");
+            quantity.add(2);
+            quantity.add(1);
+            quantity.add(5);
+            quantity.add(3);
+            quantity.add(7);
+            quantity.add(3);
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos");
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/salad");
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos2");
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/burger");
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
+            image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
 
-        Cursor result = dbCart.rawQuery("SELECT name, quantity FROM cart", null);
+            SQLiteDatabase db = dbHelperDeals.getWritableDatabase();
 
-        while(result.moveToNext()){
-            cartNames.add(result.getString(0));
-            cartQuantities.add(Integer.parseInt(result.getString(1)));
-        }
+            db.delete("deals", null,null);
 
-        dbCart.close();
-        result.close();
+            for(int i = 0; i < name.size(); i++){
+                //Toast.makeText(FragmentDeals.this.getContext(), "insert "+i, Toast.LENGTH_SHORT).show();
+                ContentValues values = new ContentValues();
 
-        //test data
-        /*name.add("Beef Taco");
-        name.add("Caesar Salad");
-        name.add("Chicken Taco");
-        name.add("Cheeseburger");
-        name.add("Shrimp Taco");
-        name.add("Spaghetti Carbonara");
-        restname.add("Chicken on a Stick");
-        restname.add("DJ's Bagels");
-        restname.add("Raising Canes");
-        restname.add("In n Out");
-        restname.add("Fiesta Burrito");
-        restname.add("Noodles Inc");
-        price.add(1.23);
-        price.add(3.43);
-        price.add(2.34);
-        price.add(2.67);
-        price.add(3.45);
-        price.add(2.35);
-        description.add("Taco with beef");
-        description.add("Leafy greens");
-        description.add("Taco with chicken");
-        description.add("Burger with cheese");
-        description.add("Taco with shrimp");
-        description.add("Pasta with pasta sauce");
-        distance.add(7.2);
-        distance.add(12.5);
-        distance.add(3.5);
-        distance.add(1.2);
-        distance.add(8.1);
-        distance.add(4.2);
-        quantity.add(2);
-        quantity.add(1);
-        quantity.add(5);
-        quantity.add(3);
-        quantity.add(7);
-        quantity.add(3);
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/salad");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/tacos2");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/burger");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
+                values.put("id", itemId.get(i));
+                values.put("name", name.get(i));
+                values.put("restaurant", restname.get(i));
+                values.put("address", address.get(i));
+                values.put("description", description.get(i));
+                values.put("price", ""+price.get(i));
+                values.put("image", image.get(i));
+                values.put("quantity", ""+quantity.get(i));
+                values.put("cartquantity", "0");
+                db.insert("deals", null, values);
 
-        SQLiteDatabase db = dbHelperDeals.getWritableDatabase();
-        for(int i = 0; i < name.size(); i++){
-            int q = quantity.get(i);
-            for(int j = 0; j < cartNames.size(); j++){
-                if((name.get(i)).equals(cartNames.get(j)))
-                    q -= cartQuantities.get(j);
             }
-            ContentValues values = new ContentValues();
+            db.close();
 
-            values.put("id", "1");
-            values.put("name", name.get(i));
-            values.put("restaurant", restname.get(i));
-            values.put("address", distance.get(i));
-            values.put("description", description.get(i));
-            values.put("price", price.get(i));
-            values.put("image", image.get(i));
-            values.put("quantity", q);
-            db.insert("deals", null, values);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("fromRegister", 0);
+            editor.commit();
 
-        }
-        db.close();*/
+            SQLiteDatabase dbDeals = dbHelperDeals.getReadableDatabase();
 
-        SQLiteDatabase dbDeals = dbHelperDeals.getReadableDatabase();
+            Cursor dealsResult = dbDeals.rawQuery("SELECT * FROM deals", null);
 
-        Cursor dealsResult = dbDeals.rawQuery("SELECT name, restaurant, address, description," +
-                "price, image, quantity FROM deals", null);
-
-        while(dealsResult.moveToNext()){
-            int q = Integer.parseInt(dealsResult.getString(6));
-            for(int j = 0; j < cartNames.size(); j++){
-                if((dealsResult.getString(0)).equals(cartNames.get(j)))
-                    q -= cartQuantities.get(j);
+            while(dealsResult.moveToNext()){
+                //0 itemId
+                //1 name
+                //2 restaurant
+                //3 address
+                //4 description
+                //5 price
+                //6 quantity
+                //7 image
+                //8 cartQuantity
+                adapter.newItem(dealsResult.getString(0), dealsResult.getString(1),
+                        dealsResult.getString(2), dealsResult.getString(3), dealsResult.getString(4),
+                        dealsResult.getString(5), dealsResult.getString(6), dealsResult.getString(7),
+                        dealsResult.getString(8));
             }
-            if(q > 0)
-                adapter.newItem(dealsResult.getString(0),Double.parseDouble(dealsResult.getString(4)),dealsResult.getString(1),
-                        dealsResult.getString(5), dealsResult.getString(3), Double.parseDouble(dealsResult.getString(2)), q);
-        }
 
-        dbDeals.close();
-        dealsResult.close();
+            dbDeals.close();
+            dealsResult.close();
+        }
+        else{
+            SQLiteDatabase dbDeals = dbHelperDeals.getReadableDatabase();
+
+            Cursor dealsResult = dbDeals.rawQuery("SELECT * FROM deals", null);
+
+            while(dealsResult.moveToNext()){
+                //0 id
+                //1 name
+                //2 restaurant
+                //3 address
+                //4 description
+                //5 price
+                //6 quantity
+                //7 image
+                //8 cartQuantity
+                adapter.newItem(dealsResult.getString(0), dealsResult.getString(1),
+                        dealsResult.getString(2), dealsResult.getString(3), dealsResult.getString(4),
+                        dealsResult.getString(5), dealsResult.getString(6), dealsResult.getString(7),
+                        dealsResult.getString(8));
+            }
+
+            dbDeals.close();
+            dealsResult.close();
+        }
 
         adapter.sortDiscounts(spinner.getSelectedItemPosition());
 
@@ -205,8 +239,8 @@ public class FragmentDeals extends Fragment {
                 itemPrice.setText("$"+adapter.getPrice(position));
                 restName.setText(adapter.getRestaurant(position));
                 itemDesc.setText(adapter.getDescription(position));
-                restDist.setText(adapter.getDistance(position)+" miles");
-                final int num = adapter.getQuantity(position);
+                restDist.setText(adapter.getAddress(position));
+                final int num = adapter.getQuantity(position) - adapter.getCartQuantity(position);
                 Glide.with(FragmentDeals.this.getContext()).load(adapter.getImage(position)).into(itemPic);
 
                 String[] n = new String[num];
@@ -226,45 +260,23 @@ public class FragmentDeals extends Fragment {
                     @Override
                     public void onClick(View view) {
                         int amount = Integer.parseInt(mspin.getSelectedItem().toString());
-                        int newNum = num - amount;
-                        int cartAmount = 0;
-                        adapter.setQuantity(position, newNum);
+                        int cartNum = adapter.getCartQuantity(position);
+                        adapter.setCartQuantity(position, cartNum + amount);
 
-                        boolean exists = false;
-                        for(int i = 0; i < cartNames.size(); i++){
-                            if((cartNames.get(i).trim()).equals(adapter.getName(position).trim())){
-                                exists = true;
-                                cartAmount = cartQuantities.get(i);
-                            }
-                        }
-
-                        SQLiteDatabase dbCart = dbHelperCart.getWritableDatabase();
+                        SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
                         ContentValues values = new ContentValues();
 
-                        if(exists){
-                            cartAmount += amount;
-                            values.put("quantity", ""+cartAmount);
+                        values.put("cartQuantity", ""+(cartNum + amount));
 
-                            String[] selectionArgs = {adapter.getName(position)};
+                        String[] selectionArgs = {""+adapter.getId(position)}; //select by matching id
+                        dbDeals.update("deals", values, "id = ?", selectionArgs);
 
-                            dbCart.update("cart", values, "name = ?", selectionArgs);
-                        }
-                        else{
-                            values.put("id", "1");
-                            values.put("name", adapter.getName(position));
-                            values.put("restaurant", adapter.getRestaurant(position));
-                            values.put("address", adapter.getDistance(position));
-                            values.put("description", adapter.getDescription(position));
-                            values.put("price", adapter.getPrice(position));
-                            values.put("image", adapter.getImage(position));
-                            values.put("quantity", mspin.getSelectedItemPosition()+1);
-                            dbCart.insert("cart", null, values);
-                        }
+                        dbDeals.close();
 
-                        dbCart.close();
-
-                        if(newNum == 0){
-                            adapter.deleteItem(position);
+                        if(cartNum == adapter.getQuantity(position)){
+                            adapter.notifyDataSetChanged();
+                            //update adapter
+                            //adapter.deleteItem(position);
                         }
                         else adapter.notifyDataSetChanged();
                         dialog.dismiss();
@@ -288,7 +300,6 @@ public class FragmentDeals extends Fragment {
     @Override
     public void onDestroy() {
         dbHelperDeals.close();
-        dbHelperCart.close();
         super.onDestroy();
     }
 }

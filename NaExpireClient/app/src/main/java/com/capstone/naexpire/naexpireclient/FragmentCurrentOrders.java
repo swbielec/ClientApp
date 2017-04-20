@@ -25,12 +25,6 @@ public class FragmentCurrentOrders extends Fragment {
     DatabaseHelperCurrentOrder dbHelperCurrent = null;
 
     ListAdapterOrdersCurrent adapter;
-    ArrayList<String> itemName = new ArrayList<String>();
-    ArrayList<String> restaurantName = new ArrayList<String>();
-    ArrayList<String> time = new ArrayList<String>();
-    ArrayList<String> price = new ArrayList<String>();
-    ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> address = new ArrayList<String>();
 
     public FragmentCurrentOrders() {
         // Required empty public constructor
@@ -43,40 +37,23 @@ public class FragmentCurrentOrders extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_current_orders, container, false);
 
-        dbHelperCurrent = new DatabaseHelperCurrentOrder(getActivity().getApplicationContext());
-
         FragmentCurrentOrders.this.getActivity().setTitle("Current Orders"); //set title
+
+        Button past = (Button) view.findViewById(R.id.btnOrdersPast);
 
         adapter = new ListAdapterOrdersCurrent(FragmentCurrentOrders.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstOrdersCurrent);
         listview.setAdapter(adapter);
 
-        //dummy data
-        /*itemname.add("Spaghetti\nBreadsticks");
-        itemname.add("Cajun Coffee\nGyros");
-        itemname.add("Spring Rolls\nShaken Beef\nSake");
-        prices.add("9.32,3.04");
-        prices.add("2.21,6.22");
-        prices.add("13.12,10.20,3.07");
-        restname.add("McFate Brewery");
-        restname.add("Haji Baba");
-        restname.add("Rice Paper");
-        time.add("3:45pm 2/24/17");
-        time.add("1:23pm 2/24/17");
-        time.add("9:39am 2/24/17");
-        distance.add(12.5);
-        distance.add(3.5);
-        distance.add(7.3);
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/gyros");
-        image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/rolls");*/
-
+        //set up connection to current orders database
+        dbHelperCurrent = new DatabaseHelperCurrentOrder(getActivity().getApplicationContext());
         SQLiteDatabase dbCurrent = dbHelperCurrent.getReadableDatabase();
 
+        //get all the entire current orders database
         Cursor result = dbCurrent.rawQuery("SELECT * FROM currentOrders", null);
 
+        //add each current order to the list adapter
         while(result.moveToNext()){
-
             adapter.newItem(result.getString(1),result.getString(2),result.getString(7),
                         result.getString(5), result.getString(8), result.getString(3), result.getString(6));
         }
@@ -84,13 +61,8 @@ public class FragmentCurrentOrders extends Fragment {
         dbCurrent.close();
         result.close();
 
-        /*for(int i = 0; i < price.size(); i++){
-            adapter.newItem(itemName.get(i), restaurantName.get(i), image.get(i), price.get(i),
-                    time.get(i), address.get(i), quantity.get(i));
-        }*/
-
-        Button past = (Button) view.findViewById(R.id.btnOrdersPast);
-
+        //'tab' button to view past orders is tapped
+        //brings user to past orders fragment
         past.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +72,7 @@ public class FragmentCurrentOrders extends Fragment {
             }
         });
 
+        //when an item in the list is tapped build a dialog showing info about the order
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id){
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentCurrentOrders.this.getContext());
@@ -125,6 +98,8 @@ public class FragmentCurrentOrders extends Fragment {
                 final AlertDialog dialog = dialogBuilder.create();
                 dialog.show();
 
+                //get directions button tapped
+                //opens Google Maps to show where the restaurant is
                 orderDirec.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -135,13 +110,14 @@ public class FragmentCurrentOrders extends Fragment {
                     }
                 });
 
+                //call restaurant button tapped
+                //dials in the restaurant phone number, but does not auto-initiate the call
                 orderCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String uri = "tel: 0123456789";
                         Intent intent = new Intent(android.content.Intent.ACTION_DIAL, Uri.parse(uri));
                         startActivity(intent);
-                        dialog.dismiss();
                     }
                 });
             }

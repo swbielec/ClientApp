@@ -66,10 +66,10 @@ public class ListAdapterCart extends BaseAdapter {
         holder.im = (ImageView) rowView.findViewById(R.id.imgCart);
         holder.ex = (ImageButton) rowView.findViewById(R.id.imgbtnCartDelete);
 
-        holder.in.setText(items.get(position).getItemName());
-        holder.rn.setText(items.get(position).getRestaurantName());
+        holder.in.setText(items.get(position).getName());
+        holder.rn.setText(items.get(position).getRestaurant());
         holder.pr.setText("$"+items.get(position).getPrice()+" each");
-        holder.qu.setText(items.get(position).getQuantity()+"x");
+        holder.qu.setText(items.get(position).getCartQuantity()+" -");
         Glide.with(context).load(items.get(position).getImage()).into(holder.im);
 
         holder.ex.setOnClickListener(new View.OnClickListener() {
@@ -86,45 +86,54 @@ public class ListAdapterCart extends BaseAdapter {
     public String updateSubtotal(){
         double sum = 0.00;
         for(int i = 0; i < items.size(); i++){
-            sum += items.get(i).getPrice() * items.get(i).getQuantity();
+            sum += items.get(i).getPrice() * items.get(i).getCartQuantity();
         }
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         return "Subtotal: $"+decimalFormat.format(sum);
     }
 
-    public void newItem(String itemName, String restaurantName, String image, double price,
-                        int quantity){
-        items.add(new Item(itemName, restaurantName, image, price, quantity));
+    public int getSize(){return items.size();}
+    public int getId(int position){ return items.get(position).getId(); }
+    public String getName(int position){ return items.get(position).getName(); }
+    public Double getPrice(int position){ return items.get(position).getPrice(); }
+    public String getRestaurant(int position){ return items.get(position).getRestaurant(); }
+    public String getImage(int position){ return items.get(position).getImage(); }
+    public String getDescription(int position){ return items.get(position).getDescription(); }
+    public String getAddress(int position){ return items.get(position).getAddress(); }
+    public int getQuantity(int position){ return items.get(position).getQuantity(); }
+    public int getCartQuantity(int position){ return items.get(position).getCartQuantity(); }
+
+    public void setQuantity(int position, int quantity){ items.get(position).setQuantity(quantity);}
+    public void setCartQuantity(int position, int cartQuantity){ items.get(position).setCartQuantity(cartQuantity);}
+
+    public void newItem(String id, String name, String restaurant, String address, String description,
+                        String price, String quantity, String image, String cartQuantity){
+        items.add(new Item(Integer.parseInt(id), name, restaurant, address, description,
+                Double.parseDouble(price), Integer.parseInt(quantity), image, Integer.parseInt(cartQuantity)));
         notifyDataSetChanged();
     }
-
-    public String getItemName(int position){return items.get(position).getItemName();}
-    public String getRestaurantName(int position){return items.get(position).getRestaurantName();}
-    public String getImage(int position){return items.get(position).getImage();}
-    public double getPrice(int position){return items.get(position).getPrice();}
-    public int getQuantity(int position){return items.get(position).getQuantity();}
 
     public String getAllItemNames(){
         String names = "";
         if(items.size()>0){
-            names += items.get(0).getItemName();
+            names += items.get(0).getName();
             for(int i = 1; i < items.size(); i++){
-                names += ","+items.get(i).getItemName();
+                names += ","+items.get(i).getName();
             }
             return names;
         }
-        else return getItemName(0);
+        else return getName(0);
     }
     public String getAllRestaurantNames(){
         String names = "";
         if(items.size()>0){
-            names += items.get(0).getRestaurantName();
+            names += items.get(0).getRestaurant();
             for(int i = 1; i < items.size(); i++){
-                names += ","+items.get(i).getRestaurantName();
+                names += ","+items.get(i).getRestaurant();
             }
             return names;
         }
-        else return getRestaurantName(0);
+        else return getRestaurant(0);
     }
     public String getAllPrices(){
         String prices = "";
@@ -149,11 +158,6 @@ public class ListAdapterCart extends BaseAdapter {
         else return ""+getQuantity(0);
     }
 
-    public void setItemName(int position, String itemName){items.get(position).setItemName(itemName);}
-    public void setRestaurantName(int position, String restaurantName){items.get(position).setRestaurantName(restaurantName);}
-    public void setPrice(int position, double price){items.get(position).setPrice(price);}
-    public void setQuantity(int position, int quantity){items.get(position).setQuantity(quantity);}
-
     public void deleteItem(int position){
         cart.deleteItem(position);
         items.remove(position);
@@ -161,36 +165,51 @@ public class ListAdapterCart extends BaseAdapter {
     }
 
     public class Item{
-        private String itemName, restaurantName, image;
+        private String name, restaurant, address, image, description;
         private double price;
-        private int quantity;
+        private int id, quantity, cartQuantity;
 
         Item(){
-            itemName = "";
-            restaurantName = "";
+            name = "";
+            price = 0.00;
+            restaurant = "";
             image = "";
-            price = 0.0;
+            description = "";
+            address = "";
             quantity = 0;
+            id = 0;
+            cartQuantity = 0;
         }
 
-        Item(String itemName, String restaurantName, String image, double price, int quantity){
-            this.itemName = itemName;
-            this.restaurantName = restaurantName;
-            this.image = image;
-            this.price = price;
+        Item(int id, String name, String restaurant, String address, String description,
+                 Double price, int quantity, String image, int cartQuantity){
+            this.id = id;
+            this.name = name;
+            this.restaurant = restaurant;
+            this.address = address;
+            this.description = description;
+            this.price  = price;
             this.quantity = quantity;
+            this.image = image;
+            this.cartQuantity = cartQuantity;
         }
-
-        String getItemName(){return itemName;}
-        String getRestaurantName(){return restaurantName;}
+        int getId(){return id;}
+        String getName(){return name;}
+        Double getPrice(){return price;}
+        String getRestaurant(){return restaurant;}
         String getImage(){return image;}
-        double getPrice(){return price;}
+        String getDescription(){return description;}
+        String getAddress(){return address;}
         int getQuantity(){return quantity;}
+        int getCartQuantity(){return cartQuantity;}
 
-        void setItemName(String itemName){this.itemName = itemName;}
-        void setRestaurantName(String restaurantName){this.restaurantName = restaurantName;}
+        void setName(String name){this.name = name;}
+        void setPrice(Double price){this.price = price;}
+        void setRestaurant(String restaurant){this.restaurant = restaurant;}
         void setImage(String image){this.image = image;}
-        void setPrice(double price){this.price = price;}
+        void setDescription(String description){this.description = description;}
+        void setAddress(String address){this.address = address;}
         void setQuantity(int quantity){this.quantity = quantity;}
+        void setCartQuantity(int cartQuantity){this.cartQuantity = cartQuantity;}
     }
 }

@@ -19,10 +19,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 
 public class FragmentShoppingCart extends Fragment {
-    DatabaseHelperCart dbHelperCart = null;
+    DatabaseHelperDeals dbHelperDeals = null;
     DatabaseHelperCurrentOrder dbHelperCurrent = null;
 
     ListAdapterCart adapter;
@@ -45,7 +46,7 @@ public class FragmentShoppingCart extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
 
-        dbHelperCart = new DatabaseHelperCart(getActivity().getApplicationContext());
+        dbHelperDeals = new DatabaseHelperDeals(getActivity().getApplicationContext());
         dbHelperCurrent = new DatabaseHelperCurrentOrder(getActivity().getApplicationContext());
 
         toDeals = (Button) view.findViewById(R.id.btnCartBack);
@@ -57,17 +58,28 @@ public class FragmentShoppingCart extends Fragment {
         ListView listview = (ListView) view.findViewById(R.id.lstCart);
         listview.setAdapter(adapter);
 
-        SQLiteDatabase db = dbHelperCart.getReadableDatabase();
+        SQLiteDatabase db = dbHelperDeals.getReadableDatabase();
 
-        Cursor result = db.rawQuery("SELECT id, name, restaurant, address, description, price, quantity, image FROM cart", null);
+        Cursor result = db.rawQuery("SELECT * FROM deals WHERE cartquantity <> '0'", null);
+        //0 itemId
+        //1 name
+        //2 restaurant
+        //3 address
+        //4 description
+        //5 price
+        //6 quantity
+        //7 image
+        //8 cartQuantity
 
         while(result.moveToNext()){
-            name.add(result.getString(1));
-            restname.add(result.getString(2));
-            price.add("$"+result.getString(5));
-            quantity.add(result.getString(6));
-            adapter.newItem(result.getString(1), result.getString(2), result.getString(7),
-                    Double.parseDouble(result.getString(5)), Integer.parseInt(result.getString(6)));
+            //name.add(result.getString(1));
+            //restname.add(result.getString(2));
+            //price.add("$"+result.getString(5));
+            //quantity.add(result.getString(6));
+            adapter.newItem(result.getString(0), result.getString(1),
+                    result.getString(2), result.getString(3), result.getString(4),
+                    result.getString(5), result.getString(6), result.getString(7),
+                    result.getString(8));
         }
 
         db.close();
@@ -88,29 +100,54 @@ public class FragmentShoppingCart extends Fragment {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //create dummy order id
+                Random rnd = new Random();
+                int orderId = 1000000 + rnd.nextInt(9000000);
 
+                //timestamp the order
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
                 Date date = new Date();
                 String dateTime = dateFormat.format(date);
 
-                //put all info in current orders db
+                //add all items in cart into current orders database
                 SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put("id", "1");
-                values.put("name", adapter.getAllItemNames());
-                values.put("restaurant", adapter.getAllRestaurantNames());
-                //values.put("address", adapter.getDistance(position));
-                values.put("time", dateTime);
-                values.put("price", adapter.getAllPrices());
-                values.put("image", adapter.getImage(0));
-                values.put("quantity", adapter.getAllQuantities());
-                dbCurrent.insert("currentOrders", null, values);
-                dbCurrent.close();
+                SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
 
-                //clear shopping cart
-                SQLiteDatabase dbCart = dbHelperCart.getWritableDatabase();
-                dbCart.delete("cart", null, null);
-                dbCart.close();
+                int length = adapter.getSize();
+                for(int i = 0; i < length; i++){
+                    String currentId = ""+adapter.getId(i);
+                    int dealQuantity = adapter.getQuantity(i);
+                    int cartQuantity = adapter.getCartQuantity(i);
+
+                    ContentValues values = new ContentValues();
+                    values.put("id", currentId);
+                    values.put("name", adapter.getName(i));
+                    values.put("restaurant", adapter.getRestaurant(i));
+                    values.put("address", adapter.getAddress(i));
+                    values.put("phone", "623"+orderId); //TEMPORARY
+                    values.put("time", dateTime);
+                    values.put("price", adapter.getPrice(i));
+                    values.put("image", adapter.getImage(i));
+                    values.put("quantity", cartQuantity);
+                    dbCurrent.insert("currentOrders", null, values);
+
+                    //delete deal if all of them were bought
+                    if(cartQuantity == dealQuantity){
+                        String[] selectionArgs = {currentId};
+                        dbDeals.delete("deals", "id = ?", selectionArgs);
+                    }
+                    else{ //else update number of deals left
+                        ContentValues value = new ContentValues();
+
+                        value.put("quantity", ""+(dealQuantity - cartQuantity));
+                        value.put("cartQuantity", ""+0);
+
+                        String[] selectionArgs = {currentId}; //select by matching id
+                        dbDeals.update("deals", value, "id = ?", selectionArgs);
+                    }
+                }
+                dbCurrent.close();
+                dbDeals.close();
 
                 FragmentCurrentOrders fragmentCurrentOrders = new FragmentCurrentOrders();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
@@ -126,20 +163,22 @@ public class FragmentShoppingCart extends Fragment {
     }
 
     public void deleteItem(int position){
-        SQLiteDatabase db = dbHelperCart.getWritableDatabase();
-        String[] selectionArgs = {adapter.getItemName(position)};
+        SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        db.delete("cart", "name = ?", selectionArgs);
+        values.put("cartQuantity", ""+0);
 
-        db.close();
+        String[] selectionArgs = {""+adapter.getId(position)}; //select by matching id
+        dbDeals.update("deals", values, "id = ?", selectionArgs);
 
-        Toast.makeText(FragmentShoppingCart.this.getContext(), selectionArgs[0] + " removed from cart.",
+        dbDeals.close();
+
+        Toast.makeText(FragmentShoppingCart.this.getContext(), adapter.getName(position) + " removed from cart.",
                 Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
-        dbHelperCart.close();
         dbHelperCurrent.close();
         super.onDestroy();
     }

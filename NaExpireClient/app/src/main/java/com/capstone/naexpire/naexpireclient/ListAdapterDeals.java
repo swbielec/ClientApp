@@ -43,33 +43,23 @@ public class ListAdapterDeals extends BaseAdapter {
         return position;
     }
 
+    public int getId(int position){ return discounts.get(position).getId(); }
     public String getName(int position){ return discounts.get(position).getName(); }
     public Double getPrice(int position){ return discounts.get(position).getPrice(); }
     public String getRestaurant(int position){ return discounts.get(position).getRestaurant(); }
     public String getImage(int position){ return discounts.get(position).getImage(); }
     public String getDescription(int position){ return discounts.get(position).getDescription(); }
-    public Double getDistance(int position){ return discounts.get(position).getDistance(); }
+    public String getAddress(int position){ return discounts.get(position).getAddress(); }
     public int getQuantity(int position){ return discounts.get(position).getQuantity(); }
+    public int getCartQuantity(int position){ return discounts.get(position).getCartQuantity(); }
 
     public void setQuantity(int position, int quantity){ discounts.get(position).setQuantity(quantity);}
+    public void setCartQuantity(int position, int cartQuantity){ discounts.get(position).setCartQuantity(cartQuantity);}
 
-    public void deleteItem(int position){
-        discounts.remove(position);
-        notifyDataSetChanged();
-    }
-
-    public void setItem(int position, String name, Double price, String restaurant, String image,
-                        String description, Double distance, int quantity){
-        discounts.get(position).getName();
-        discounts.get(position).getPrice();
-        discounts.get(position).getRestaurant();
-        discounts.get(position).getImage();
-        notifyDataSetChanged();
-    }
-
-    public void newItem(String name, Double price, String restaurant, String image,
-                        String description, Double distance, int quantity){
-        discounts.add(new Discount(name, price, restaurant, image, description, distance, quantity));
+    public void newItem(String id, String name, String restaurant, String address, String description,
+                        String price, String quantity, String image, String cartQuantity){
+        discounts.add(new Discount(Integer.parseInt(id), name, restaurant, address, description,
+                Double.parseDouble(price), Integer.parseInt(quantity), image, Integer.parseInt(cartQuantity)));
         notifyDataSetChanged();
     }
 
@@ -83,10 +73,10 @@ public class ListAdapterDeals extends BaseAdapter {
                 });
                 notifyDataSetChanged();
                 break;
-            case 1: //Distance
+            case 1: //Fix this to actually sort by Distance
                 Collections.sort(discounts, new Comparator<Discount>(){
                     public int compare( Discount o1, Discount o2){
-                        return o1.getDistance().compareTo(o2.getDistance());
+                        return o1.getName().compareTo(o2.getName());
                     }
                 });
                 notifyDataSetChanged();
@@ -128,16 +118,16 @@ public class ListAdapterDeals extends BaseAdapter {
         holder.in.setText(discounts.get(position).getName());
         holder.rn.setText(discounts.get(position).getRestaurant());
         holder.pr.setText("$"+discounts.get(position).getPrice());
-        holder.dl.setText(discounts.get(position).getQuantity()+"x");
+        holder.dl.setText((discounts.get(position).getQuantity() - discounts.get(position).getCartQuantity())+"");
         Glide.with(context).load(discounts.get(position).getImage()).into(holder.im);
 
         return rowView;
     }
 
     public class Discount{
-        private String name, restaurant, image, description;
-        private double distance, price;
-        private int quantity;
+        private String name, restaurant, address, image, description;
+        private double price;
+        private int id, quantity, cartQuantity;
 
         Discount(){
             name = "";
@@ -145,33 +135,41 @@ public class ListAdapterDeals extends BaseAdapter {
             restaurant = "";
             image = "";
             description = "";
-            distance = 0.0;
+            address = "";
             quantity = 0;
+            id = 0;
+            cartQuantity = 0;
         }
 
-        Discount(String n, Double p, String r, String i, String d, Double dist, int q){
-            name = n;
-            price  = p;
-            restaurant = r;
-            image = i;
-            description = d;
-            distance = dist;
-            quantity = q;
+        Discount(int id, String name, String restaurant, String address, String description,
+                 Double price, int quantity, String image, int cartQuantity){
+            this.id = id;
+            this.name = name;
+            this.restaurant = restaurant;
+            this.address = address;
+            this.description = description;
+            this.price  = price;
+            this.quantity = quantity;
+            this.image = image;
+            this.cartQuantity = cartQuantity;
         }
+        int getId(){return id;}
         String getName(){return name;}
         Double getPrice(){return price;}
         String getRestaurant(){return restaurant;}
         String getImage(){return image;}
         String getDescription(){return description;}
-        Double getDistance(){return distance;}
+        String getAddress(){return address;}
         int getQuantity(){return quantity;}
+        int getCartQuantity(){return cartQuantity;}
 
-        void setName(String n){name = n;}
-        void setPrice(Double p){price = p;}
-        void setRestaurant(String r){restaurant = r;}
-        void setImage(String i){image = i;}
-        void setDescription(String d){description = d;}
-        void setDistance(Double d){distance = d;}
-        void setQuantity(int q){quantity = q;}
+        void setName(String name){this.name = name;}
+        void setPrice(Double price){this.price = price;}
+        void setRestaurant(String restaurant){this.restaurant = restaurant;}
+        void setImage(String image){this.image = image;}
+        void setDescription(String description){this.description = description;}
+        void setAddress(String address){this.address = address;}
+        void setQuantity(int quantity){this.quantity = quantity;}
+        void setCartQuantity(int cartQuantity){this.cartQuantity = cartQuantity;}
     }
 }

@@ -48,9 +48,11 @@ public class ActivityRegUserInfo extends AppCompatActivity {
         //checks that passwords match
         Boolean match = password.getText().toString().equals(confirmPass.getText().toString());
 
+        //if all fields are filled, password is valid and both entered passwords match
         if(ready && valid && match){
             //put values in shared preferences
             SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("fromRegister", 1); //store a value to signify the user just finished registering
             editor.putString("firstName", firstName.getText().toString());
             editor.putString("lastName", lastName.getText().toString());
             editor.putString("email", email.getText().toString());
@@ -61,7 +63,7 @@ public class ActivityRegUserInfo extends AppCompatActivity {
 
             Intent intent = new Intent(this, ActivityLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(intent); //return to login activity
         }
         else if(!ready) Toast.makeText(this, "Fill All Fields", Toast.LENGTH_SHORT).show();
         else if(!valid) Toast.makeText(this, "Password must have at least:\n\t8 Characters\n\t1 Capital\n\t1 Number\n\t1 Special Character", Toast.LENGTH_SHORT).show();
@@ -69,15 +71,13 @@ public class ActivityRegUserInfo extends AppCompatActivity {
     }
 
     public static boolean isValidPassword(final String password) {
-
         Pattern pattern;
         Matcher matcher;
+
         //needs a cap, number, special char, and 8+ chars total
         final String PASSWORD_PATTERN = "((?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,})";
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
-
         return matcher.matches();
-
     }
 }

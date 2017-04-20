@@ -32,6 +32,7 @@ public class ActivityNavDrawer extends AppCompatActivity
         sharedPref = getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
                 Context.MODE_PRIVATE);
 
+        //set the initial displaed fragment to be the list of deals
         FragmentDeals fragmentDeals = new FragmentDeals();
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragment_container, fragmentDeals).commit();
@@ -46,16 +47,16 @@ public class ActivityNavDrawer extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //setup to change the text values at the top of the navigation drawer
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         View header = navigationView.getHeaderView(0);
-
         title = (TextView) header.findViewById(R.id.lblDrawerUsername);
         detail = (TextView) header.findViewById(R.id.lblDrawerEmail);
 
-        title.setText(sharedPref.getString("firstName", "Shmeggle") +" "+
-        sharedPref.getString("lastName", "TeaBoot"));
+        //set the text values to values stored and shared preferences
+        title.setText(sharedPref.getString("firstName", "") +" "+
+        sharedPref.getString("lastName", ""));
         detail.setText(sharedPref.getString("email", ""));
     }
 

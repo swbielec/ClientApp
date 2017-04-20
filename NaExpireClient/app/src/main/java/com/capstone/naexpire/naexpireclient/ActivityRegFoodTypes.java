@@ -29,6 +29,19 @@ public class ActivityRegFoodTypes extends AppCompatActivity {
         foods.add("Vietnamese");
         foods.add("Chinese");
         foods.add("Mediterranean");
+        foods.add("Japanese");
+        foods.add("Indian");
+        foods.add("Korean");
+        foods.add("Italian");
+        foods.add("Thai");
+        foods.add("Greek");
+        foods.add("Lebanese");
+        foods.add("Moroccan");
+        foods.add("French");
+        foods.add("Spanish");
+        foods.add("German");
+        foods.add("Turkish");
+        foods.add("Caribbean");
 
         adapter = new ListAdapterFoods(this, foods, checked);
         final ListView listView = (ListView) findViewById(R.id.lstRegFoodsList);
