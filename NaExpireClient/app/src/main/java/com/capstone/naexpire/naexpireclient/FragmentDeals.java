@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +31,12 @@ import java.util.ArrayList;
 
 
 public class FragmentDeals extends Fragment {
-    DatabaseHelperDeals dbHelperDeals = null;
+    private DatabaseHelperDeals dbHelperDeals = null;
 
     private SharedPreferences sharedPref;
 
-    ImageButton goToCart;
+    private ImageButton goToCart;
+    private RelativeLayout v;
 
     ListAdapterDeals adapter;
     ArrayList<String> itemId = new ArrayList<>();
@@ -239,6 +241,7 @@ public class FragmentDeals extends Fragment {
                 final TextView itemPrice = (TextView) dialogView.findViewById(R.id.lblInfoPrice);
                 final TextView itemDesc = (TextView) dialogView.findViewById(R.id.lblInfoDescription);
                 final TextView restDist = (TextView) dialogView.findViewById(R.id.lblInfoDistance);
+                v = (RelativeLayout) dialogView.findViewById(R.id.rlDealSpinner);
                 ImageView itemPic = (ImageView) dialogView.findViewById(R.id.imgInfoPicture);
                 final Button cart = (Button) dialogView.findViewById(R.id.btnInfoCart);
 
@@ -255,40 +258,59 @@ public class FragmentDeals extends Fragment {
                     n[i] = ""+(i+1);
                 }
 
-                final Spinner mspin=(Spinner) dialogView.findViewById(R.id.spnInfoQuantity);
-                final ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(FragmentDeals.this.getContext(),android.R.layout.simple_spinner_item, n);
-                mspin.setAdapter(sAdapter);
+                if(adapter.getCartQuantity(position) < adapter.getQuantity(position)){
+                    final Spinner mspin=(Spinner) dialogView.findViewById(R.id.spnInfoQuantity);
+                    final ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(FragmentDeals.this.getContext(),android.R.layout.simple_spinner_item, n);
+                    mspin.setAdapter(sAdapter);
 
-                dialogBuilder.setView(dialogView);
-                final AlertDialog dialog = dialogBuilder.create();
-                dialog.show();
+                    dialogBuilder.setView(dialogView);
+                    final AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
 
-                cart.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int amount = Integer.parseInt(mspin.getSelectedItem().toString());
-                        int cartNum = adapter.getCartQuantity(position);
-                        adapter.setCartQuantity(position, cartNum + amount);
+                    cart.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            int amount = Integer.parseInt(mspin.getSelectedItem().toString());
+                            int cartNum = adapter.getCartQuantity(position);
+                            adapter.setCartQuantity(position, cartNum + amount);
 
-                        SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
-                        ContentValues values = new ContentValues();
+                            SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
+                            ContentValues values = new ContentValues();
 
-                        values.put("cartQuantity", ""+(cartNum + amount));
+                            values.put("cartQuantity", ""+(cartNum + amount));
 
-                        String[] selectionArgs = {""+adapter.getId(position)}; //select by matching id
-                        dbDeals.update("deals", values, "id = ?", selectionArgs);
+                            String[] selectionArgs = {""+adapter.getId(position)}; //select by matching id
+                            dbDeals.update("deals", values, "id = ?", selectionArgs);
 
-                        dbDeals.close();
+                            dbDeals.close();
 
-                        if(cartNum == adapter.getQuantity(position)){
-                            adapter.notifyDataSetChanged();
-                            //update adapter
-                            //adapter.deleteItem(position);
+                            if(cartNum == adapter.getQuantity(position)){
+                                adapter.notifyDataSetChanged();
+                                //update adapter
+                                //adapter.deleteItem(position);
+                            }
+                            else adapter.notifyDataSetChanged();
+                            dialog.dismiss();
                         }
-                        else adapter.notifyDataSetChanged();
-                        dialog.dismiss();
-                    }
-                });
+                    });
+                }
+                else{
+                    v.setVisibility(View.GONE);
+                    itemPrice.setText("None Left");
+                    cart.setText("Back to Deals");
+
+                    dialogBuilder.setView(dialogView);
+                    final AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
+
+                    cart.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                }
             }
         });
 
