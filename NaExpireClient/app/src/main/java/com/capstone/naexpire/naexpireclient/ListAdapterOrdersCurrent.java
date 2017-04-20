@@ -47,11 +47,17 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
     public String getItemName(int position){ return orders.get(position).getItemName(); }
     public String getRestaurantName(int position){ return orders.get(position).getRestaurantName(); }
     public String getImage(int position){ return orders.get(position).getImage(); }
-    public String getPrice(int position){ return orders.get(position).getPrice(); }
+    public String getPrice(int position){
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        return decimalFormat.format(Double.parseDouble(orders.get(position).getPrice()));
+    }
     public String getTime(int position){ return orders.get(position).getTime(); }
     public String getAddress(int position){ return orders.get(position).getAddress(); }
     public String getPhone(int position){ return orders.get(position).getPhone(); }
-    public double getTotal(int position){ return orders.get(position).getTotal(); }
+    public String getTotal(int position){
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        return decimalFormat.format(orders.get(position).getTotal());
+    }
     public String getQuantity(int position){ return orders.get(position).getQuantity(); }
 
     public void newItem(String id, String itemName, String restaurantName, String address, String phone,
@@ -86,7 +92,8 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
 
         holder.rn.setText(orders.get(position).getRestaurantName());
         holder.tm.setText(orders.get(position).getTime());
-        holder.pr.setText("$"+orders.get(position).getTotal());
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        holder.pr.setText("$"+decimalFormat.format(orders.get(position).getTotal()));
         Glide.with(context).load(orders.get(position).getImage()).into(holder.im);
 
         return rowView;

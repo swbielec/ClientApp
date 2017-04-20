@@ -2,16 +2,21 @@ package com.capstone.naexpire.naexpireclient;
 
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,16 +28,13 @@ import java.util.Random;
 
 
 public class FragmentShoppingCart extends Fragment {
-    DatabaseHelperDeals dbHelperDeals = null;
-    DatabaseHelperCurrentOrder dbHelperCurrent = null;
+    private DatabaseHelperDeals dbHelperDeals = null;
+    private DatabaseHelperCurrentOrder dbHelperCurrent = null;
+    private SharedPreferences sharedPref;
 
-    ListAdapterCart adapter;
-    ArrayList<String> name = new ArrayList<String>();
-    ArrayList<String> restname = new ArrayList<String>();
-    ArrayList<String> price = new ArrayList<String>();
-    ArrayList<String> quantity = new ArrayList<String>();
-    TextView subtotal;
-    Button toDeals, placeOrder;
+    private ListAdapterCart adapter;
+    private TextView subtotal;
+    private Button toDeals, placeOrder;
 
 
     public FragmentShoppingCart() {
@@ -45,6 +47,9 @@ public class FragmentShoppingCart extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+
+        sharedPref = getActivity().getSharedPreferences("com.capstone.naexpire.PREFERENCE_FILE_KEY",
+                Context.MODE_PRIVATE);
 
         dbHelperDeals = new DatabaseHelperDeals(getActivity().getApplicationContext());
         dbHelperCurrent = new DatabaseHelperCurrentOrder(getActivity().getApplicationContext());
@@ -72,10 +77,6 @@ public class FragmentShoppingCart extends Fragment {
         //8 cartQuantity
 
         while(result.moveToNext()){
-            //name.add(result.getString(1));
-            //restname.add(result.getString(2));
-            //price.add("$"+result.getString(5));
-            //quantity.add(result.getString(6));
             adapter.newItem(result.getString(0), result.getString(1),
                     result.getString(2), result.getString(3), result.getString(4),
                     result.getString(5), result.getString(6), result.getString(7),
@@ -100,58 +101,95 @@ public class FragmentShoppingCart extends Fragment {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //create dummy order id
-                Random rnd = new Random();
-                int orderId = 1000000 + rnd.nextInt(9000000);
+                if(!sharedPref.getString("cardNumber", "").equals("")){ //if card info already entered
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentShoppingCart.this.getContext());
+                    View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_confirm_card, null);
+                    final TextView cardNum = (TextView) dialogView.findViewById(R.id.lblConfirmCard);
+                    final Button no = (Button) dialogView.findViewById(R.id.btnNo);
+                    final Button yes = (Button) dialogView.findViewById(R.id.btnYes);
 
-                //timestamp the order
-                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
-                Date date = new Date();
-                String dateTime = dateFormat.format(date);
+                    cardNum.setText("XXXX - XXXX - XXXX - "+sharedPref.getString("cardNumber","").substring(12));
 
-                //add all items in cart into current orders database
-                SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
-                SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
+                    dialogBuilder.setView(dialogView);
+                    final AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
 
-                int length = adapter.getSize();
-                for(int i = 0; i < length; i++){
-                    String currentId = ""+adapter.getId(i);
-                    int dealQuantity = adapter.getQuantity(i);
-                    int cartQuantity = adapter.getCartQuantity(i);
+                    no.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                    ContentValues values = new ContentValues();
-                    values.put("id", orderId);
-                    values.put("name", adapter.getName(i));
-                    values.put("restaurant", adapter.getRestaurant(i));
-                    values.put("address", adapter.getAddress(i));
-                    values.put("phone", "623"+orderId); //TEMPORARY
-                    values.put("time", dateTime);
-                    values.put("price", adapter.getPrice(i));
-                    values.put("image", adapter.getImage(i));
-                    values.put("quantity", cartQuantity);
-                    dbCurrent.insert("currentOrders", null, values);
+                    yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //create dummy order id
+                            Random rnd = new Random();
+                            int orderId = 1000000 + rnd.nextInt(9000000);
 
-                    //delete deal if all of them were bought
-                    if(cartQuantity == dealQuantity){
-                        String[] selectionArgs = {currentId};
-                        dbDeals.delete("deals", "id = ?", selectionArgs);
-                    }
-                    else{ //else update number of deals left
-                        ContentValues value = new ContentValues();
+                            //timestamp the order
+                            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+                            Date date = new Date();
+                            String dateTime = dateFormat.format(date);
 
-                        value.put("quantity", ""+(dealQuantity - cartQuantity));
-                        value.put("cartQuantity", ""+0);
+                            //add all items in cart into current orders database
+                            SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
+                            SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
 
-                        String[] selectionArgs = {currentId}; //select by matching id
-                        dbDeals.update("deals", value, "id = ?", selectionArgs);
-                    }
+                            int length = adapter.getSize();
+                            for(int i = 0; i < length; i++){
+                                String currentId = ""+adapter.getId(i);
+                                int dealQuantity = adapter.getQuantity(i);
+                                int cartQuantity = adapter.getCartQuantity(i);
+
+                                ContentValues values = new ContentValues();
+                                values.put("id", orderId);
+                                values.put("name", adapter.getName(i));
+                                values.put("restaurant", adapter.getRestaurant(i));
+                                values.put("address", adapter.getAddress(i));
+                                values.put("phone", "623"+orderId); //TEMPORARY
+                                values.put("time", dateTime);
+                                values.put("price", adapter.getPrice(i));
+                                values.put("image", adapter.getImage(i));
+                                values.put("quantity", cartQuantity);
+                                dbCurrent.insert("currentOrders", null, values);
+
+                                //delete deal if all of them were bought
+                                if(cartQuantity == dealQuantity){
+                                    String[] selectionArgs = {currentId};
+                                    dbDeals.delete("deals", "id = ?", selectionArgs);
+                                }
+                                else{ //else update number of deals left
+                                    ContentValues value = new ContentValues();
+
+                                    value.put("quantity", ""+(dealQuantity - cartQuantity));
+                                    value.put("cartQuantity", ""+0);
+
+                                    String[] selectionArgs = {currentId}; //select by matching id
+                                    dbDeals.update("deals", value, "id = ?", selectionArgs);
+                                }
+                            }
+                            dbCurrent.close();
+                            dbDeals.close();
+
+                            FragmentCurrentOrders fragmentCurrentOrders = new FragmentCurrentOrders();
+                            FragmentManager manager = getActivity().getSupportFragmentManager();
+                            manager.beginTransaction().replace(R.id.fragment_container, fragmentCurrentOrders).commit();
+
+                            dialog.dismiss();
+                        }
+                    });
+
                 }
-                dbCurrent.close();
-                dbDeals.close();
+                else{
+                    Toast.makeText(FragmentShoppingCart.this.getContext(),
+                            "Enter credit card information.", Toast.LENGTH_LONG).show();
 
-                FragmentCurrentOrders fragmentCurrentOrders = new FragmentCurrentOrders();
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                manager.beginTransaction().replace(R.id.fragment_container, fragmentCurrentOrders).commit();
+                    FragmentPreferences fragmentPreferences = new FragmentPreferences();
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.fragment_container, fragmentPreferences).commit();
+                }
             }
         });
 

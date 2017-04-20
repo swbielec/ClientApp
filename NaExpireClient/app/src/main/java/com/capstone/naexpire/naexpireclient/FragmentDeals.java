@@ -294,7 +294,7 @@ public class FragmentDeals extends Fragment {
                         }
                     });
                 }
-                else{
+                else{ //if all the deals are in the user's cart already
                     v.setVisibility(View.GONE);
                     itemPrice.setText("None Left");
                     cart.setText("Back to Deals");

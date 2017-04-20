@@ -96,9 +96,10 @@ public class FragmentCurrentOrders extends Fragment {
                 final TextView ordertime = (TextView) dialogView.findViewById(R.id.lblCurrentTime);
                 Button orderDirec = (Button) dialogView.findViewById(R.id.btnCurrentDirections);
                 Button orderCall = (Button) dialogView.findViewById(R.id.btnCurrentCall);
+                Button orderFulfill = (Button) dialogView.findViewById(R.id.btnCurrentFullfill);
 
                 itemName.setText(adapter.getQuantity(position) + " - " + adapter.getItemName(position));
-                orderprices.setText(adapter.getPrice(position));
+                orderprices.setText("$"+adapter.getPrice(position));
                 restName.setText(adapter.getRestaurantName(position));
                 orderid.setText("Order #"+adapter.getId(position));
                 ordertotal.setText("$"+adapter.getTotal(position));
@@ -128,6 +129,39 @@ public class FragmentCurrentOrders extends Fragment {
                         String uri = "tel: "+adapter.getPhone(position);
                         Intent intent = new Intent(android.content.Intent.ACTION_DIAL, Uri.parse(uri));
                         startActivity(intent);
+                    }
+                });
+
+                orderFulfill.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+
+                        AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(FragmentCurrentOrders.this.getContext());
+                        View dialogView2 = getActivity().getLayoutInflater().inflate(R.layout.dialog_confirm_fulfill, null);
+                        Button no = (Button) dialogView2.findViewById(R.id.btnFulfillNo);
+                        Button yes = (Button) dialogView2.findViewById(R.id.btnFulfillYes);
+
+                        dialogBuilder2.setView(dialogView2);
+                        final AlertDialog dialog2 = dialogBuilder2.create();
+                        dialog2.show();
+
+                        no.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.show();
+                                dialog2.dismiss();
+                            }
+                        });
+
+                        yes.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //transfer to past orders
+
+                                dialog2.dismiss();
+                            }
+                        });
                     }
                 });
             }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,10 @@ public class FragmentPreferences extends Fragment {
         final EditText username = (EditText) view.findViewById(R.id.txtPrefUsername);
         final EditText email = (EditText) view.findViewById(R.id.txtPrefEmail);
         final EditText phone = (EditText) view.findViewById(R.id.txtPrefPhone);
+        final EditText cardName = (EditText) view.findViewById(R.id.txtPrefCardName);
+        final EditText cardNum = (EditText) view.findViewById(R.id.txtPrefCardNumber);
+        final EditText cardCvv = (EditText) view.findViewById(R.id.txtPrefCVV);
+        final EditText oldPass = (EditText) view.findViewById(R.id.txtPrefCurrentPassword);
         final EditText password = (EditText) view.findViewById(R.id.txtPrefPassword);
         final EditText cPassword = (EditText) view.findViewById(R.id.txtPrefPassword2);
         Button foods = (Button) view.findViewById(R.id.btnPrefFoods);
@@ -71,14 +76,51 @@ public class FragmentPreferences extends Fragment {
                 editor.putString("username", username.getText().toString());
                 editor.putString("email", email.getText().toString());
                 editor.putString("phone", phone.getText().toString());
-                if(isValidPassword(password.getText().toString())){
-                    if(password.getText().toString().equals(cPassword.getText().toString()))
+                if(!cardName.getText().toString().isEmpty() || !cardNum.getText().toString().isEmpty() ||
+                        !cardCvv.getText().toString().isEmpty()){
+                    if(cardNum.getText().toString().length() != 16){
+                        Toast.makeText(FragmentPreferences.this.getContext(), "Invalid card number.", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(cardCvv.getText().toString().length() < 3){
+                        Toast.makeText(FragmentPreferences.this.getContext(), "Invalid security code.", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(cardName.getText().toString().isEmpty() || cardNum.getText().toString().isEmpty() ||
+                            cardCvv.getText().toString().isEmpty()){
+                        Toast.makeText(FragmentPreferences.this.getContext(), "Fill all fields.", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        editor.putString("cardName", cardName.getText().toString());
+                        editor.putString("cardNumber", cardNum.getText().toString());
+                        editor.putString("cardCvv", cardCvv.getText().toString());
+                    }
+                }
+                if(!oldPass.getText().toString().isEmpty() || !password.getText().toString().isEmpty() ||
+                        !cPassword.getText().toString().isEmpty()){
+                    if(!sharedPref.getString("password","").equals(oldPass.getText().toString())){
+                        Toast.makeText(FragmentPreferences.this.getContext(), "Current password incorrect.", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(!isValidPassword(password.getText().toString())){
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentPreferences.this.getContext());
+                        View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_valid_password, null);
+                        Button gotIt = (Button) dialogView.findViewById(R.id.btnDismiss);
+
+                        dialogBuilder.setView(dialogView);
+                        final AlertDialog dialog = dialogBuilder.create();
+                        dialog.show();
+                        hideKeyboard(view);
+
+                        gotIt.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    else if(password.getText().toString().equals(cPassword.getText().toString())){
                         editor.putString("password", password.getText().toString());
+                    }
                     else Toast.makeText(FragmentPreferences.this.getContext(), "Passwords do not match.", Toast.LENGTH_SHORT).show();
                 }
-                else Toast.makeText(FragmentPreferences.this.getContext(),
-                        "Password must have at least:\n\t8 Characters\n\t1 Capital\n\t1 Number\n\t1 Special Character",
-                        Toast.LENGTH_SHORT).show();
                 editor.commit();
 
                 //update restaurant name in the navigation drawer

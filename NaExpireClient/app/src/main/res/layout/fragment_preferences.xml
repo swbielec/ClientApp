@@ -28,14 +28,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/lblPrefDivider"
-        android:text="User Info"
+        android:text="Account Details"
         android:textColor="@color/colorAccent"
         android:background="@android:color/transparent"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_below="@id/btnPrefFoods">
 
         <RelativeLayout
@@ -44,56 +44,99 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/lblPrefUsername"
+                android:id="@+id/lblPrefAcctDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:text="Username"/>
+                android:text="User Information"
+                android:textSize="16dp"
+                android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/txtPrefUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/lblPrefUsername"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/lblPrefAcctDetails"
                 android:hint="Username"
                 android:inputType="text"/>
-
-            <TextView
-                android:id="@+id/lblPrefEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtPrefUsername"
-                android:text="Email"/>
 
             <EditText
                 android:id="@+id/txtPrefEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/lblPrefEmail"
+                android:layout_below="@id/txtPrefUsername"
                 android:hint="Email"
                 android:inputType="textEmailAddress"/>
-
-            <TextView
-                android:id="@+id/lblPrefPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtPrefEmail"
-                android:text="Phone"/>
 
             <EditText
                 android:id="@+id/txtPrefPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/lblPrefPhone"
+                android:layout_below="@id/txtPrefEmail"
                 android:hint="Phone Number"
                 android:inputType="phone"/>
+
+            <TextView
+                android:id="@+id/lblPrefCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/txtPrefPhone"
+                android:text="Credit Cart Information"
+                android:textSize="16dp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/txtPrefCardName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblPrefCard"
+                android:hint="Name on Card"
+                android:inputType="textCapWords"
+                android:maxLength="16"/>
+
+            <EditText
+                android:id="@+id/txtPrefCardNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefCardName"
+                android:hint="Credit Card Number"
+                android:inputType="numberPassword"
+                android:maxLength="16"/>
+
+            <EditText
+                android:id="@+id/txtPrefCVV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPrefCardNumber"
+                android:hint="Security Code"
+                android:inputType="numberPassword"
+                android:maxLength="4" />
+
+            <TextView
+                android:id="@+id/lblPrefPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/txtPrefCVV"
+                android:text="Change Password"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/txtPrefCurrentPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/lblPrefPassword"
+                android:hint="Current Password"
+                android:inputType="textPassword"/>
 
             <EditText
                 android:id="@+id/txtPrefPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_below="@id/txtPrefPhone"
+                android:layout_below="@id/txtPrefCurrentPassword"
                 android:hint="New Password"
                 android:inputType="textPassword"/>
 
