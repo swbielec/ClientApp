@@ -50,8 +50,8 @@ public class ListAdapterOrdersPast extends BaseAdapter{
 
     public void setRating(int position, int stars){orders.get(position).setRating(stars);}
 
-    public void newItem(String id, String name, String restaurant, String price, String time) {
-        orders.add(new Order(id, name, restaurant, price, time));
+    public void newItem(String id, String items, String restaurant, String time, String price, String quantity) {
+        orders.add(new Order(id, items, restaurant, time, price, quantity));
         notifyDataSetChanged();
     }
 
@@ -84,51 +84,55 @@ public class ListAdapterOrdersPast extends BaseAdapter{
     }
 
     public class Order{
-        private String orderId, names, restaurant, price, time;
-        private double total;
-        private int rating;
+        private String id, items, restaurant, time;
+        private double price, total;
+        private int quantity, rating;
 
         Order(){
-            orderId = "";
-            names = "";
+            id = "";
+            items = "";
             restaurant = "";
-            price = "";
             time = "";
-            total = 0.00;
+            price = 0.0;
+            total = 0.0;
+            quantity = 0;
             rating = 0;
         }
 
-        Order(String id, String name, String restName, String prices, String timePlaced){
-            orderId = id;
-            names = name;
+        Order(String id, String items, String restName, String timePlaced, String price, String quantity){
+            this.id = id;
+            this.items = items;
             restaurant = restName;
-            price  = prices;
+            this.price  = Double.parseDouble(price);
             time = timePlaced;
-            String[] strPrices = price.split(",");
+            /*String[] strPrices = price.split(",");
             for(int q = 0; q < strPrices.length; q++){
                 total += Double.parseDouble(strPrices[q]);
-            }
+            }*/
+            this.quantity = Integer.parseInt(quantity);
+            total = this.price * this.quantity;
             rating = 0;
         }
 
-        String getOrderId(){return orderId;}
-        String getName(){return names;}
+        String getOrderId(){return id;}
+        String getName(){return items;}
         String getRestaurant(){return restaurant;}
         String getPrice(){
-            String[] s = price.split(",");
+            /*String[] s = price.split(",");
             String formattedPrice = "";
             for(int t = 0; t< s.length;t++){
                 formattedPrice += "$"+s[t]+"\n";
             }
-            return formattedPrice;
+            return formattedPrice;*/
+            return ""+price;
         }
         String getTime(){return time;}
         Double getTotal(){return total;}
         int getRating(){return rating;}
 
-        void setName(String n){names = n;}
+        void setName(String items){this.items = items;}
         void setRestaurant(String r){restaurant = r;}
-        void setPrice(String p){price = p;}
+        void setPrice(String p){price = Double.parseDouble(p);}
         void setTotal(double t){total = t;}
         void setRating(int stars){rating = stars;}
     }

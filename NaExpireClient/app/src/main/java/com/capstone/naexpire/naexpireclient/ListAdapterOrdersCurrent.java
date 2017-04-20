@@ -67,6 +67,11 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void deleteItem(int position){
+        orders.remove(position);
+        notifyDataSetChanged();
+    }
+
     public void sortOrders() { //sort orders by time
         Collections.sort(orders, new Comparator<Order>() {
             public int compare(Order o1, Order o2) {

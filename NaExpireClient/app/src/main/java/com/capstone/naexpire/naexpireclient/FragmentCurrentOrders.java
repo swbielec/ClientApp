@@ -1,6 +1,7 @@
 package com.capstone.naexpire.naexpireclient;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -157,7 +158,28 @@ public class FragmentCurrentOrders extends Fragment {
                         yes.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                //transfer to past orders
+                                //insert into past orders db
+                                DatabaseHelperPastOrder dbHelperPast = new DatabaseHelperPastOrder(getActivity().getApplicationContext());
+                                SQLiteDatabase dbPast = dbHelperPast.getWritableDatabase();
+                                ContentValues values = new ContentValues();
+                                values.put("id", adapter.getId(position));
+                                values.put("items", adapter.getItemName(position));
+                                values.put("restaurant", adapter.getRestaurantName(position));
+                                values.put("time", adapter.getTime(position));
+                                values.put("price", adapter.getPrice(position));
+                                values.put("quantity", adapter.getQuantity(position));
+                                values.put("rating", "0");
+                                dbPast.insert("past", null, values);
+                                dbPast.close();
+                                dbHelperPast.close();
+
+                                //remove from current orders db
+                                SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
+                                String[] selectionArgs = {adapter.getId(position), adapter.getRestaurantName(position)};
+                                dbCurrent.delete("currentOrders", "id = ? and restaurant = ?", selectionArgs);
+                                dbCurrent.close();
+
+                                adapter.deleteItem(position);
 
                                 dialog2.dismiss();
                             }

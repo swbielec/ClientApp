@@ -1,6 +1,8 @@
 package com.capstone.naexpire.naexpireclient;
 
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,13 +21,9 @@ import java.util.Random;
 
 
 public class FragmentPastOrders extends Fragment {
+    private DatabaseHelperPastOrder dbHelperPast = null;
 
     ListAdapterOrdersPast adapter;
-    ArrayList<String> orderId = new ArrayList<String>();
-    ArrayList<String> itemname = new ArrayList<String>();
-    ArrayList<String> restname = new ArrayList<String>();
-    ArrayList<String> time = new ArrayList<String>();
-    ArrayList<String> prices = new ArrayList<String>();
 
     public FragmentPastOrders() {
         // Required empty public constructor
@@ -37,33 +35,34 @@ public class FragmentPastOrders extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_past_orders, container, false);
+
+        dbHelperPast = new DatabaseHelperPastOrder(getActivity().getApplicationContext());
+
         FragmentPastOrders.this.getActivity().setTitle("Past Orders"); //set title
 
         adapter = new ListAdapterOrdersPast(FragmentPastOrders.this.getContext());
         ListView listview = (ListView) view.findViewById(R.id.lstOrdersPast);
         listview.setAdapter(adapter);
 
-        //dummy data
-        Random rnd = new Random();
-        orderId.add(""+(100000 + rnd.nextInt(900000)));
-        orderId.add(""+(100000 + rnd.nextInt(900000)));
-        orderId.add(""+(100000 + rnd.nextInt(900000)));
-        itemname.add("Tamales\nFlan");
-        itemname.add("Cheese Pizza\nSoft Drink");
-        itemname.add("Scrambled Eggs\nHorchata\nPancakes");
-        prices.add("11.52,5.34");
-        prices.add("8.98,1.23");
-        prices.add("13.12,4.23,3.07");
-        restname.add("Los Sombreros");
-        restname.add("Organ Stop Pizza");
-        restname.add("Otro Cafe");
-        time.add("12:42pm 2/22/17");
-        time.add("9:17am 2/19/17");
-        time.add("2:32pm 2/03/17");
+        SQLiteDatabase dbPast = dbHelperPast.getReadableDatabase();
 
-        for(int i = 0; i < prices.size(); i++){
-            adapter.newItem(orderId.get(i), itemname.get(i), restname.get(i), prices.get(i), time.get(i));
+        Cursor result = dbPast.rawQuery("SELECT * FROM past", null);
+
+        while(result.moveToNext()){
+            //0 id
+            //1 items
+            //2 restaurant
+            //3 time
+            //4 price
+            //5 quantity
+            //6 rating
+
+            adapter.newItem(result.getString(0), result.getString(1), result.getString(2),
+                    result.getString(3), result.getString(4), result.getString(5));
         }
+
+        dbPast.close();
+        result.close();
 
         Button current = (Button) view.findViewById(R.id.btnOrdersCurrent);
 
