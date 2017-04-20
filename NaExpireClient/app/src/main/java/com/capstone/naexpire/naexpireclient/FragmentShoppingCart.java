@@ -13,12 +13,17 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,7 +68,7 @@ public class FragmentShoppingCart extends Fragment {
         ListView listview = (ListView) view.findViewById(R.id.lstCart);
         listview.setAdapter(adapter);
 
-        SQLiteDatabase db = dbHelperDeals.getReadableDatabase();
+        final SQLiteDatabase db = dbHelperDeals.getReadableDatabase();
 
         Cursor result = db.rawQuery("SELECT * FROM deals WHERE cartquantity <> '0'", null);
         //0 itemId
@@ -95,6 +100,63 @@ public class FragmentShoppingCart extends Fragment {
                 FragmentDeals fragmentDeals = new FragmentDeals();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 manager.beginTransaction().replace(R.id.fragment_container, fragmentDeals).commit();
+            }
+        });
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id){
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentShoppingCart.this.getContext());
+                View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_cart, null);
+                final TextView item = (TextView) dialogView.findViewById(R.id.lblItem);
+                final TextView restaurant = (TextView) dialogView.findViewById(R.id.lblRestaurant);
+                final TextView description = (TextView) dialogView.findViewById(R.id.lblDescription);
+                final TextView address = (TextView) dialogView.findViewById(R.id.lblAddress);
+                final TextView price = (TextView) dialogView.findViewById(R.id.lblPrice);
+                ImageView itemPic = (ImageView) dialogView.findViewById(R.id.imgItem);
+                final Button update = (Button) dialogView.findViewById(R.id.btnUpdate);
+
+                item.setText(adapter.getName(position));
+                price.setText("$"+adapter.getPrice(position));
+                restaurant.setText(adapter.getRestaurant(position));
+                description.setText(adapter.getDescription(position));
+                address.setText(adapter.getAddress(position));
+                final int num = adapter.getCartQuantity(position);
+                Glide.with(FragmentShoppingCart.this.getContext()).load(adapter.getImage(position)).into(itemPic);
+
+                String[] n = new String[num];
+                for(int i = 0; i < num; i++){
+                    n[i] = ""+(i+1);
+                }
+
+                final Spinner mspin=(Spinner) dialogView.findViewById(R.id.spnQuantity);
+                final ArrayAdapter<String> sAdapter = new ArrayAdapter<String>(FragmentShoppingCart.this.getContext(),
+                        android.R.layout.simple_spinner_item, n);
+                mspin.setAdapter(sAdapter);
+                mspin.setSelection(n.length-1);
+
+                dialogBuilder.setView(dialogView);
+                final AlertDialog dialog = dialogBuilder.create();
+                dialog.show();
+
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int newAmount = mspin.getSelectedItemPosition() + 1;
+                        if(newAmount != adapter.getCartQuantity(position)){
+                            SQLiteDatabase dbDeals = dbHelperDeals.getWritableDatabase();
+                            ContentValues value = new ContentValues();
+
+                            value.put("cartQuantity", ""+newAmount);
+
+                            String[] selectionArgs = {""+adapter.getId(position)}; //select by matching id
+                            dbDeals.update("deals", value, "id = ?", selectionArgs);
+                            dbDeals.close();
+                            adapter.setCartQuantity(position, newAmount);
+                            adapter.notifyDataSetChanged();
+                        }
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 
