@@ -134,6 +134,13 @@ public class FragmentDeals extends Fragment {
             image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/shrimp");
             image.add("android.resource://com.capstone.naexpire.naexpireclient/drawable/carbonara");
 
+            //reset current orders for new register
+            DatabaseHelperCurrentOrder dbHelperCurrent = new DatabaseHelperCurrentOrder(getActivity().getApplicationContext());
+            SQLiteDatabase dbCurrent = dbHelperCurrent.getWritableDatabase();
+            dbCurrent.delete("currentOrders", null,null);
+            dbCurrent.close();
+            dbHelperCurrent.close();
+
             SQLiteDatabase db = dbHelperDeals.getWritableDatabase();
 
             db.delete("deals", null,null);

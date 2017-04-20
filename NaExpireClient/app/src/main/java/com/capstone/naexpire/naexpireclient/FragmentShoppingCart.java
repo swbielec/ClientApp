@@ -120,7 +120,7 @@ public class FragmentShoppingCart extends Fragment {
                     int cartQuantity = adapter.getCartQuantity(i);
 
                     ContentValues values = new ContentValues();
-                    values.put("id", currentId);
+                    values.put("id", orderId);
                     values.put("name", adapter.getName(i));
                     values.put("restaurant", adapter.getRestaurant(i));
                     values.put("address", adapter.getAddress(i));

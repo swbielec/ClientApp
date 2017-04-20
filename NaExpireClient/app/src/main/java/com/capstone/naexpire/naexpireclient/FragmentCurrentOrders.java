@@ -52,10 +52,21 @@ public class FragmentCurrentOrders extends Fragment {
         //get all the entire current orders database
         Cursor result = dbCurrent.rawQuery("SELECT * FROM currentOrders", null);
 
+        //0 id
+        //1 name
+        //2 restaurant
+        //3 address
+        //4 phone
+        //5 price
+        //6 quantity
+        //7 image
+        //8 time
+
         //add each current order to the list adapter
         while(result.moveToNext()){
-            adapter.newItem(result.getString(1),result.getString(2),result.getString(7),
-                        result.getString(5), result.getString(8), result.getString(3), result.getString(6));
+            adapter.newItem(result.getString(0),result.getString(1),result.getString(2),
+                    result.getString(3), result.getString(4), result.getString(5),
+                    result.getString(6), result.getString(7), result.getString(8));
         }
 
         dbCurrent.close();
@@ -86,11 +97,10 @@ public class FragmentCurrentOrders extends Fragment {
                 Button orderDirec = (Button) dialogView.findViewById(R.id.btnCurrentDirections);
                 Button orderCall = (Button) dialogView.findViewById(R.id.btnCurrentCall);
 
-                itemName.setText(adapter.getItemName(position));
+                itemName.setText(adapter.getQuantity(position) + " - " + adapter.getItemName(position));
                 orderprices.setText(adapter.getPrice(position));
                 restName.setText(adapter.getRestaurantName(position));
-                Random rnd = new Random();
-                orderid.setText("Order #"+(100000 + rnd.nextInt(900000)));
+                orderid.setText("Order #"+adapter.getId(position));
                 ordertotal.setText("$"+adapter.getTotal(position));
                 ordertime.setText("Placed at: "+adapter.getTime(position));
 
@@ -103,7 +113,7 @@ public class FragmentCurrentOrders extends Fragment {
                 orderDirec.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String uri = "geo:0,0?q=7349 E Diamond St";
+                        String uri = "geo:0,0?q="+adapter.getRestaurantName(position)+", "+adapter.getAddress(position);
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                         intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                         startActivity(intent);
@@ -115,7 +125,7 @@ public class FragmentCurrentOrders extends Fragment {
                 orderCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String uri = "tel: 0123456789";
+                        String uri = "tel: "+adapter.getPhone(position);
                         Intent intent = new Intent(android.content.Intent.ACTION_DIAL, Uri.parse(uri));
                         startActivity(intent);
                     }

@@ -30,7 +30,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         //if the user just came from registration set the email and password fields
         //with the credentials they entered while registering
-        if(true){//sharedPref.getInt("fromRegister", 0) == 1){
+        if(sharedPref.getInt("fromRegister", 0) == 1){
             email.setText(sharedPref.getString("email", ""));
             password.setText(sharedPref.getString("password", ""));
 

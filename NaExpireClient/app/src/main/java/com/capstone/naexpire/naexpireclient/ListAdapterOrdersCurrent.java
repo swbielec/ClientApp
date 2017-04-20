@@ -43,17 +43,21 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
         return position;
     }
 
+    public String getId(int position){return orders.get(position).getId();}
     public String getItemName(int position){ return orders.get(position).getItemName(); }
     public String getRestaurantName(int position){ return orders.get(position).getRestaurantName(); }
     public String getImage(int position){ return orders.get(position).getImage(); }
     public String getPrice(int position){ return orders.get(position).getPrice(); }
     public String getTime(int position){ return orders.get(position).getTime(); }
     public String getAddress(int position){ return orders.get(position).getAddress(); }
+    public String getPhone(int position){ return orders.get(position).getPhone(); }
     public double getTotal(int position){ return orders.get(position).getTotal(); }
+    public String getQuantity(int position){ return orders.get(position).getQuantity(); }
 
-    public void newItem(String itemName, String restaurantName, String image, String price, String time,
-                        String address, String quantity) {
-        orders.add(new Order(itemName, restaurantName, image, price, time, address, quantity));
+    public void newItem(String id, String itemName, String restaurantName, String address, String phone,
+                        String price, String quantity, String image, String time) {
+        orders.add(new Order(id, itemName, restaurantName, address, phone, price, quantity,
+                image, time));
         notifyDataSetChanged();
     }
 
@@ -89,69 +93,45 @@ public class ListAdapterOrdersCurrent extends BaseAdapter {
     }
 
     public class Order{
-        private String itemName, restaurantName, image, price, time, address, quantity;
+        private String id, itemName, restaurantName, address, phone, price, quantity, image, time;
         private double total;
 
         Order(){
+            id = "";
             itemName = "";
             restaurantName = "";
-            image = "";
             address = "";
+            phone = "";
             price = "";
+            quantity = "";
+            image = "";
             time = "";
             total = 0.00;
-            quantity = "";
         }
 
-        Order(String itemName, String restaurantName, String image, String price, String time,
-              String address, String quantity){
+        Order(String id, String itemName, String restaurantName, String address, String phone,
+              String price, String quantity, String image, String time){
+            this.id = id;
             this.itemName = itemName;
             this.restaurantName = restaurantName;
-            this.image = image;
-            this.price  = price;
-            this.time = time;
             this.address = address;
+            this.phone = phone;
+            this.price  = price;
             this.quantity = quantity;
-            String[] strPrices = price.split(",");
-            String[] quantities = quantity.split(",");
-            total = 0.0;
-            DecimalFormat decimalFormat = new DecimalFormat("0.00");
-            for(int q = 0; q < strPrices.length; q++){
-                total += Double.parseDouble(strPrices[q]) * Integer.parseInt(quantities[q]);
-            }
+            this.image = image;
+            this.time = time;
+            total = Integer.parseInt(quantity) * Double.parseDouble(price); //calculate total
+            DecimalFormat decimalFormat = new DecimalFormat("0.00"); //format total
             total = Double.parseDouble(decimalFormat.format(total));
         }
-        String getItemName(){
-            String[] s = itemName.split(",");
-            String[] q = quantity.split(",");
-            String result = q[0]+"x "+s[0];
-            if(s.length == 1) return result;
-            else{
-                for(int i = 1; i < s.length; i++){
-                    result += "\n"+q[i]+"x "+s[i];
-                }
-                return result;
-            }
-        }
-        String getRestaurantName(){
-            String[] s = restaurantName.split(",");
-            if (s.length > 1) return s[0]+" +"+(s.length-1)+" more";
-            else return s[0];
-        }
+        String getId(){return id;}
+        String getItemName(){return itemName;}
+        String getRestaurantName(){return restaurantName;}
         String getImage(){return image;}
-        String getPrice(){
-            String[] s = price.split(",");
-            String formattedPrice = "$"+s[0];
-            if(s.length == 1) return formattedPrice;
-            else{
-                for(int t = 1; t< s.length;t++){
-                    formattedPrice += "\n$"+s[t];
-                }
-                return formattedPrice;
-            }
-        }
+        String getPrice(){return price;}
         String getTime(){return time;}
         String getAddress(){return address;}
+        String getPhone(){return phone;}
         String getQuantity(){return quantity;}
         Double getTotal(){return total;}
 
