@@ -1,6 +1,7 @@
 package com.capstone.naexpire.naexpireclient;
 
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -58,7 +60,7 @@ public class FragmentPastOrders extends Fragment {
             //6 rating
 
             adapter.newItem(result.getString(0), result.getString(1), result.getString(2),
-                    result.getString(3), result.getString(4), result.getString(5));
+                    result.getString(3), result.getString(4), result.getString(5), result.getString(6));
         }
 
         dbPast.close();
@@ -88,11 +90,12 @@ public class FragmentPastOrders extends Fragment {
                 final RatingBar rating = (RatingBar) dialogView.findViewById(R.id.ratingBar);
                 Button orderSubmit = (Button) dialogView.findViewById(R.id.btnPastSubmit);
 
+                DecimalFormat decimalFormat = new DecimalFormat("0.00");
                 itemName.setText(adapter.getName(position));
-                orderprices.setText(adapter.getPrice(position));
+                orderprices.setText("$"+decimalFormat.format(adapter.getPrice(position)));
                 restName.setText(adapter.getRestaurant(position));
                 orderid.setText("Order #"+adapter.getOrderId(position));
-                ordertotal.setText(adapter.getTotal(position));
+                ordertotal.setText("$"+decimalFormat.format(adapter.getTotal(position)));
                 ordertime.setText("Placed at: "+adapter.getTime(position));
                 rating.setRating(adapter.getRating(position));
 
@@ -105,6 +108,14 @@ public class FragmentPastOrders extends Fragment {
                     public void onClick(View view) {
                         int stars = (int)rating.getRating();
                         adapter.setRating(position, stars);
+
+                        SQLiteDatabase dbPast = dbHelperPast.getWritableDatabase();
+                        ContentValues value = new ContentValues();
+                        value.put("rating", stars);
+                        dbPast.update("past", value, "id = ? and restaurant = ?",
+                                new String[]{adapter.getOrderId(position), adapter.getRestaurant(position)});
+                        dbPast.close();
+
                         dialog.dismiss();
                     }
                 });

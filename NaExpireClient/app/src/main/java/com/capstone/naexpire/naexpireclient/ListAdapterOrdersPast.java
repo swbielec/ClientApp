@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,15 +44,16 @@ public class ListAdapterOrdersPast extends BaseAdapter{
     public String getOrderId(int position){return orders.get(position).getOrderId();}
     public String getName(int position){ return orders.get(position).getName(); }
     public String getRestaurant(int position){ return orders.get(position).getRestaurant(); }
-    public String getPrice(int position){ return orders.get(position).getPrice(); }
+    public Double getPrice(int position){ return orders.get(position).getPrice(); }
     public String getTime(int position){ return orders.get(position).getTime(); }
-    public String getTotal(int position){ return "$"+orders.get(position).getTotal(); }
+    public Double getTotal(int position){ return orders.get(position).getTotal(); }
     public int getRating(int position){ return orders.get(position).getRating(); }
 
     public void setRating(int position, int stars){orders.get(position).setRating(stars);}
 
-    public void newItem(String id, String items, String restaurant, String time, String price, String quantity) {
-        orders.add(new Order(id, items, restaurant, time, price, quantity));
+    public void newItem(String id, String items, String restaurant, String time, String price,
+                        String quantity, String rating) {
+        orders.add(new Order(id, items, restaurant, time, price, quantity, rating));
         notifyDataSetChanged();
     }
 
@@ -76,9 +78,10 @@ public class ListAdapterOrdersPast extends BaseAdapter{
         holder.rn=(TextView) rowView.findViewById(R.id.lblPastListRest);
         holder.tl=(TextView) rowView.findViewById(R.id.lblPastListTotal);
 
-        holder.id.setText("Order #"+orders.get(position).getOrderId());
-        holder.rn.setText(orders.get(position).getRestaurant());
-        holder.tl.setText("$"+orders.get(position).getTotal());
+        holder.id.setText(getTime(position));
+        holder.rn.setText(getRestaurant(position));
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        holder.tl.setText("$"+decimalFormat.format(orders.get(position).getTotal()));
 
         return rowView;
     }
@@ -99,7 +102,8 @@ public class ListAdapterOrdersPast extends BaseAdapter{
             rating = 0;
         }
 
-        Order(String id, String items, String restName, String timePlaced, String price, String quantity){
+        Order(String id, String items, String restName, String timePlaced, String price,
+              String quantity, String rating){
             this.id = id;
             this.items = items;
             restaurant = restName;
@@ -111,20 +115,20 @@ public class ListAdapterOrdersPast extends BaseAdapter{
             }*/
             this.quantity = Integer.parseInt(quantity);
             total = this.price * this.quantity;
-            rating = 0;
+            this.rating = Integer.parseInt(rating);
         }
 
         String getOrderId(){return id;}
         String getName(){return items;}
         String getRestaurant(){return restaurant;}
-        String getPrice(){
+        Double getPrice(){
             /*String[] s = price.split(",");
             String formattedPrice = "";
             for(int t = 0; t< s.length;t++){
                 formattedPrice += "$"+s[t]+"\n";
             }
             return formattedPrice;*/
-            return ""+price;
+            return price;
         }
         String getTime(){return time;}
         Double getTotal(){return total;}

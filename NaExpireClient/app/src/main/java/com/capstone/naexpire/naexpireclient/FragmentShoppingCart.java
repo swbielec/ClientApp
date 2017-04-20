@@ -101,7 +101,11 @@ public class FragmentShoppingCart extends Fragment {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!sharedPref.getString("cardNumber", "").equals("")){ //if card info already entered
+                if(adapter.getSize() == 0){
+                    Toast.makeText(FragmentShoppingCart.this.getContext(), "Shopping cart is empty.",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(!sharedPref.getString("cardNumber", "").equals("")){ //if card info already entered
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FragmentShoppingCart.this.getContext());
                     View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_confirm_card, null);
                     final TextView cardNum = (TextView) dialogView.findViewById(R.id.lblConfirmCard);
