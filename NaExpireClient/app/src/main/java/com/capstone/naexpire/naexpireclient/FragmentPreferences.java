@@ -8,10 +8,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,8 @@ public class FragmentPreferences extends Fragment {
         foods.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
+
                 FragmentEditFoodTypes fragmentEditFoodTypes = new FragmentEditFoodTypes();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 manager.beginTransaction().replace(R.id.fragment_container, fragmentEditFoodTypes).commit();
@@ -87,7 +92,36 @@ public class FragmentPreferences extends Fragment {
             }
         });
 
+        RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.layPreferences);
+        RelativeLayout layout2 = (RelativeLayout) view.findViewById(R.id.layPrefsScroll);
+
+        layout.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev)
+            {
+                hideKeyboard(view);
+                return false;
+            }
+        });
+
+        layout2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                hideKeyboard(view);
+                //return false;
+            }
+        });
+
         return view;
+    }
+
+    protected void hideKeyboard(View view)
+    {
+        InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     public static boolean isValidPassword(final String password) {

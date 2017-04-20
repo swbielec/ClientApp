@@ -6,10 +6,13 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class ActivityLogin extends AppCompatActivity {
@@ -40,6 +43,24 @@ public class ActivityLogin extends AppCompatActivity {
             editor.putInt("fromRegister", 2);
             editor.commit();
         }
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layLogin);
+
+        layout.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev)
+            {
+                hideKeyboard(view);
+                return false;
+            }
+        });
+    }
+
+    protected void hideKeyboard(View view)
+    {
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     //user taps the login button
@@ -65,7 +86,7 @@ public class ActivityLogin extends AppCompatActivity {
 
     //user taps that they forgot their password
     public void clickForgot(View view){
-        Toast.makeText(this, "Recovery Email Sent", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Recovery email sent.", Toast.LENGTH_SHORT).show();
     }
 
     //user taps the register button

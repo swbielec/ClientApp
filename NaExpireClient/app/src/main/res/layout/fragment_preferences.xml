@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/layPreferences"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,6 +39,7 @@
         android:layout_below="@id/btnPrefFoods">
 
         <RelativeLayout
+            android:id="@+id/layPrefsScroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

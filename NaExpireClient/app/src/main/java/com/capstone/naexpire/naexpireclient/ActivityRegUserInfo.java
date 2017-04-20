@@ -1,13 +1,26 @@
 package com.capstone.naexpire.naexpireclient;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +45,24 @@ public class ActivityRegUserInfo extends AppCompatActivity {
         email = (EditText) findViewById(R.id.txtRegUserEmail);
         password = (EditText) findViewById(R.id.txtRegUserPassword);
         confirmPass = (EditText) findViewById(R.id.txtRegUserPassword2);
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layUserInfo);
+
+        layout.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev)
+            {
+                hideKeyboard(view);
+                return false;
+            }
+        });
+    }
+
+    protected void hideKeyboard(View view)
+    {
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     public void clickSubmit(View view){
@@ -66,7 +97,23 @@ public class ActivityRegUserInfo extends AppCompatActivity {
             startActivity(intent); //return to login activity
         }
         else if(!ready) Toast.makeText(this, "Fill All Fields", Toast.LENGTH_SHORT).show();
-        else if(!valid) Toast.makeText(this, "Password must have at least:\n\t8 Characters\n\t1 Capital\n\t1 Number\n\t1 Special Character", Toast.LENGTH_SHORT).show();
+        else if(!valid){
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_valid_password, null);
+            Button gotIt = (Button) dialogView.findViewById(R.id.btnDismiss);
+
+            dialogBuilder.setView(dialogView);
+            final AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
+            hideKeyboard(view);
+
+            gotIt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+        }
         else Toast.makeText(this, "passwords do not match", Toast.LENGTH_SHORT).show();
     }
 
